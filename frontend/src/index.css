@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-dark-bg text-dark-text;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1d29;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d3548;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3d4558;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.card {
+  @apply bg-dark-card border border-dark-border rounded-lg p-4;
+}
+
+.btn-primary {
+  @apply bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg transition;
+}
+
+.btn-secondary {
+  @apply bg-dark-card hover:bg-dark-border text-dark-text px-4 py-2 rounded-lg transition border border-dark-border;
+}
+
+.btn-danger {
+  @apply bg-danger hover:bg-red-600 text-white px-4 py-2 rounded-lg transition;
+}
+
+.input {
+  @apply bg-dark-card border border-dark-border text-dark-text px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
+.label {
+  @apply text-dark-text text-sm font-medium mb-1 block;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Animação para notificação de atualização */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
