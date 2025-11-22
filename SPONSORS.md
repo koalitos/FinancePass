@@ -114,7 +114,7 @@ Toda contribuição é bem-vinda, não importa o valor!
 
 Não pode apoiar financeiramente? Sem problema! Você pode:
 
-- ⭐ Dar uma estrela no [GitHub](https://github.com/seu-usuario/financial-manager)
+- ⭐ Dar uma estrela no [GitHub](https://github.com/koalitos/FinancePass)
 - 🐛 Reportar bugs
 - 💡 Sugerir melhorias
 - 🔧 Contribuir com código
@@ -185,7 +185,7 @@ Obrigado a todos que contribuíram com código:
 
 <!-- Lista será gerada automaticamente -->
 
-Veja todos os contribuidores no [GitHub](https://github.com/seu-usuario/financial-manager/graphs/contributors)
+Veja todos os contribuidores no [GitHub](https://github.com/koalitos/FinancePass/graphs/contributors)
 
 ### Comunidade
 
@@ -229,7 +229,7 @@ Sim! Entre em contato para discutir opções de patrocínio corporativo.
 Dúvidas sobre apoio ou patrocínio?
 
 - 📧 Email: [seu-email@exemplo.com]
-- 💬 [GitHub Discussions](https://github.com/seu-usuario/financial-manager/discussions)
+- 💬 [GitHub Discussions](https://github.com/koalitos/FinancePass/discussions)
 - ☕ [Ko-fi](https://ko-fi.com/koalitos)
 
 ---

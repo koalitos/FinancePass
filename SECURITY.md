@@ -19,7 +19,7 @@ A segurança dos seus dados é nossa prioridade máxima. Se você descobriu uma 
 
 Em vez disso, envie um email para: **[seu-email@exemplo.com]**
 
-Ou use a funcionalidade de [Security Advisories](https://github.com/seu-usuario/financial-manager/security/advisories) do GitHub.
+Ou use a funcionalidade de [Security Advisories](https://github.com/koalitos/FinancePass/security/advisories) do GitHub.
 
 ### Informações a Incluir
 
@@ -116,11 +116,11 @@ Agradecemos às seguintes pessoas por reportarem vulnerabilidades de forma respo
 
 Para questões de segurança:
 - Email: **[seu-email@exemplo.com]**
-- GitHub Security: [Security Advisories](https://github.com/seu-usuario/financial-manager/security/advisories)
+- GitHub Security: [Security Advisories](https://github.com/koalitos/FinancePass/security/advisories)
 
 Para outras questões:
-- Issues: [GitHub Issues](https://github.com/seu-usuario/financial-manager/issues)
-- Discussions: [GitHub Discussions](https://github.com/seu-usuario/financial-manager/discussions)
+- Issues: [GitHub Issues](https://github.com/koalitos/FinancePass/issues)
+- Discussions: [GitHub Discussions](https://github.com/koalitos/FinancePass/discussions)
 
 ---
 

@@ -104,19 +104,19 @@ We're working on a **mobile app** that will:
 ```
 FinancePass-Setup-1.0.0.exe
 ```
-[⬇️ Download for Windows](https://github.com/seu-usuario/financial-manager/releases)
+[⬇️ Download for Windows](https://github.com/koalitos/FinancePass/releases)
 
 ### macOS
 ```
 FinancePass-1.0.0.dmg
 ```
-[⬇️ Download for macOS](https://github.com/seu-usuario/financial-manager/releases)
+[⬇️ Download for macOS](https://github.com/koalitos/FinancePass/releases)
 
 ### Linux
 ```
 FinancePass-1.0.0.AppImage
 ```
-[⬇️ Download for Linux](https://github.com/seu-usuario/financial-manager/releases)
+[⬇️ Download for Linux](https://github.com/koalitos/FinancePass/releases)
 
 ---
 
@@ -133,8 +133,8 @@ FinancePass-1.0.0.AppImage
 
 ```bash
 # Clone the repository
-git clone https://github.com/seu-usuario/financial-manager.git
-cd financial-manager
+git clone https://github.com/koalitos/FinancePass.git
+cd FinancePass
 
 # Install dependencies
 npm run install-all
@@ -183,7 +183,7 @@ Contributions are very welcome! This is an open source project made by the commu
 
 ### Ways to Contribute
 
-1. 🐛 **Report Bugs**: Found a problem? [Open an issue](https://github.com/seu-usuario/financial-manager/issues)
+1. 🐛 **Report Bugs**: Found a problem? [Open an issue](https://github.com/koalitos/FinancePass/issues)
 2. 💡 **Suggest Features**: Have an idea? Share it with us!
 3. 🔧 **Submit Pull Requests**: Want to contribute code? Fork and send a PR
 4. 📖 **Improve Documentation**: Help make the documentation clearer
@@ -195,7 +195,7 @@ Contributions are very welcome! This is an open source project made by the commu
 ```bash
 # 1. Fork the project
 # 2. Clone your fork
-git clone https://github.com/your-username/financial-manager.git
+git clone https://github.com/your-username/FinancePass.git
 
 # 3. Create a branch for your feature
 git checkout -b my-feature
@@ -270,8 +270,8 @@ See the [LICENSE](LICENSE) file for more details.
 
 ## 💬 Community
 
-- 💬 [GitHub Discussions](https://github.com/seu-usuario/financial-manager/discussions)
-- 🐛 [Report Bugs](https://github.com/seu-usuario/financial-manager/issues)
+- 💬 [GitHub Discussions](https://github.com/koalitos/FinancePass/discussions)
+- 🐛 [Report Bugs](https://github.com/koalitos/FinancePass/issues)
 - ☕ [Ko-fi](https://ko-fi.com/koalitos)
 
 ---
@@ -280,7 +280,7 @@ See the [LICENSE](LICENSE) file for more details.
 
 Have questions or suggestions? Get in touch:
 
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
+- GitHub: [@koalitos](https://github.com/koalitos)
 - Ko-fi: [koalitos](https://ko-fi.com/koalitos)
 
 ---

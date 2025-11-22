@@ -7,9 +7,9 @@ Comece a usar o FinancePass em menos de 5 minutos!
 ### Opção A: Instalador (Recomendado)
 
 1. **Baixe o instalador** para seu sistema:
-   - [Windows](https://github.com/seu-usuario/financial-manager/releases) - `.exe`
-   - [macOS](https://github.com/seu-usuario/financial-manager/releases) - `.dmg`
-   - [Linux](https://github.com/seu-usuario/financial-manager/releases) - `.AppImage`
+   - [Windows](https://github.com/koalitos/FinancePass/releases) - `.exe`
+   - [macOS](https://github.com/koalitos/FinancePass/releases) - `.dmg`
+   - [Linux](https://github.com/koalitos/FinancePass/releases) - `.AppImage`
 
 2. **Execute o instalador** e siga as instruções
 
@@ -18,8 +18,8 @@ Comece a usar o FinancePass em menos de 5 minutos!
 ### Opção B: Código Fonte
 
 ```bash
-git clone https://github.com/seu-usuario/financial-manager.git
-cd financial-manager
+git clone https://github.com/koalitos/FinancePass.git
+cd FinancePass
 npm run install-all
 npm run setup
 npm start
@@ -288,7 +288,7 @@ Agora que você sabe o básico:
 
 1. 📖 Leia o [README completo](README.md)
 2. ❓ Veja o [FAQ](FAQ.md)
-3. 🤝 Contribua no [GitHub](https://github.com/seu-usuario/financial-manager)
+3. 🤝 Contribua no [GitHub](https://github.com/koalitos/FinancePass)
 4. ☕ Apoie o projeto no [Ko-fi](https://ko-fi.com/koalitos)
 
 ---
@@ -299,8 +299,8 @@ Precisa de ajuda?
 
 - 📖 [Documentação Completa](README.md)
 - ❓ [FAQ](FAQ.md)
-- 💬 [GitHub Discussions](https://github.com/seu-usuario/financial-manager/discussions)
-- 🐛 [Reportar Bug](https://github.com/seu-usuario/financial-manager/issues)
+- 💬 [GitHub Discussions](https://github.com/koalitos/FinancePass/discussions)
+- 🐛 [Reportar Bug](https://github.com/koalitos/FinancePass/issues)
 
 ---
 
@@ -320,7 +320,7 @@ Você está pronto para usar o FinancePass!
 
 **Feito com ❤️ e ☕ para devolver sua privacidade**
 
-⭐ Se você gostou, deixe uma estrela no [GitHub](https://github.com/seu-usuario/financial-manager)!
+⭐ Se você gostou, deixe uma estrela no [GitHub](https://github.com/koalitos/FinancePass)!
 
 [⬆ Voltar ao topo](#-guia-rápido---financepass)
 

@@ -49,7 +49,7 @@ O FinancePass:
 
 ### Como instalo o FinancePass?
 
-1. Baixe o instalador para seu sistema operacional na [página de releases](https://github.com/seu-usuario/financial-manager/releases)
+1. Baixe o instalador para seu sistema operacional na [página de releases](https://github.com/koalitos/FinancePass/releases)
 2. Execute o instalador
 3. Siga as instruções na tela
 4. Pronto!
@@ -123,7 +123,7 @@ Infelizmente, se você esquecer sua senha mestra, não há como recuperar suas s
 ### Como posso verificar que o app é seguro?
 
 O código é open source! Você pode:
-1. Revisar o código no [GitHub](https://github.com/seu-usuario/financial-manager)
+1. Revisar o código no [GitHub](https://github.com/koalitos/FinancePass)
 2. Auditar a segurança
 3. Compilar você mesmo a partir do código fonte
 
@@ -167,8 +167,8 @@ Sim! Veja nosso [Guia de Contribuição](CONTRIBUTING.md).
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/financial-manager.git
-cd financial-manager
+git clone https://github.com/koalitos/FinancePass.git
+cd FinancePass
 
 # Instale dependências
 npm run install-all
@@ -224,8 +224,8 @@ Não! Você pode ajudar com:
 
 ### Como reporto um bug?
 
-1. Verifique se já não foi reportado nas [Issues](https://github.com/seu-usuario/financial-manager/issues)
-2. [Abra uma nova issue](https://github.com/seu-usuario/financial-manager/issues/new)
+1. Verifique se já não foi reportado nas [Issues](https://github.com/koalitos/FinancePass/issues)
+2. [Abra uma nova issue](https://github.com/koalitos/FinancePass/issues/new)
 3. Use o template de bug report
 4. Inclua o máximo de detalhes possível
 
@@ -270,7 +270,7 @@ Sim! Estamos desenvolvendo apps para Android e iOS. Eles funcionarão 100% offli
 
 ### Quando será lançado?
 
-Ainda não temos data definida, mas estamos trabalhando nisso. Acompanhe no [GitHub](https://github.com/seu-usuario/financial-manager) para novidades.
+Ainda não temos data definida, mas estamos trabalhando nisso. Acompanhe no [GitHub](https://github.com/koalitos/FinancePass) para novidades.
 
 ### Será gratuito também?
 
@@ -283,8 +283,8 @@ Sim! O app mobile será 100% gratuito, assim como a versão desktop.
 ### Onde posso obter ajuda?
 
 - 📖 [Documentação](README.md)
-- 💬 [GitHub Discussions](https://github.com/seu-usuario/financial-manager/discussions)
-- 🐛 [Issues](https://github.com/seu-usuario/financial-manager/issues)
+- 💬 [GitHub Discussions](https://github.com/koalitos/FinancePass/discussions)
+- 🐛 [Issues](https://github.com/koalitos/FinancePass/issues)
 - ☕ [Ko-fi](https://ko-fi.com/koalitos)
 
 ### Encontrei um problema, o que faço?

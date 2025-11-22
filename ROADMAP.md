@@ -317,7 +317,7 @@ Quer ajudar a construir o futuro do FinancePass?
 
 Funcionalidades marcadas com 🔥 são **alta prioridade** e precisam de ajuda!
 
-Veja as [Issues](https://github.com/seu-usuario/financial-manager/issues) para tarefas específicas.
+Veja as [Issues](https://github.com/koalitos/FinancePass/issues) para tarefas específicas.
 
 ---
 
@@ -325,9 +325,9 @@ Veja as [Issues](https://github.com/seu-usuario/financial-manager/issues) para t
 
 Sua opinião é importante! Ajude a moldar o futuro do FinancePass:
 
-- 💡 [Sugerir Funcionalidades](https://github.com/seu-usuario/financial-manager/issues/new?template=feature_request.md)
-- 🗳️ [Votar em Funcionalidades](https://github.com/seu-usuario/financial-manager/discussions)
-- 💬 [Participar das Discussões](https://github.com/seu-usuario/financial-manager/discussions)
+- 💡 [Sugerir Funcionalidades](https://github.com/koalitos/FinancePass/issues/new?template=feature_request.md)
+- 🗳️ [Votar em Funcionalidades](https://github.com/koalitos/FinancePass/discussions)
+- 💬 [Participar das Discussões](https://github.com/koalitos/FinancePass/discussions)
 
 ---
 
@@ -371,7 +371,7 @@ Este roadmap é um **plano flexível** e pode mudar baseado em:
 
 Dúvidas sobre o roadmap?
 
-- 💬 [GitHub Discussions](https://github.com/seu-usuario/financial-manager/discussions)
+- 💬 [GitHub Discussions](https://github.com/koalitos/FinancePass/discussions)
 - 📧 Email: [seu-email@exemplo.com]
 - ☕ [Ko-fi](https://ko-fi.com/koalitos)
 
@@ -381,7 +381,7 @@ Dúvidas sobre o roadmap?
 
 **Construindo o futuro da privacidade financeira, juntos!** 🚀
 
-⭐ [Dê uma estrela no GitHub](https://github.com/seu-usuario/financial-manager) para apoiar o projeto!
+⭐ [Dê uma estrela no GitHub](https://github.com/koalitos/FinancePass) para apoiar o projeto!
 
 [⬆ Voltar ao topo](#️-roadmap---financepass)
 

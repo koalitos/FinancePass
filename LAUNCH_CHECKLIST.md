@@ -142,7 +142,7 @@ git init
 git add .
 git commit -m "feat: initial release v1.0.0"
 git branch -M main
-git remote add origin https://github.com/seu-usuario/financial-manager.git
+git remote add origin https://github.com/koalitos/FinancePass.git
 git push -u origin main
 ```
 
