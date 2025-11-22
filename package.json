@@ -1,0 +1,64 @@
+{
+  "name": "financial-manager",
+  "version": "1.0.0",
+  "description": "Sistema de Gerenciamento Financeiro e Senhas",
+  "main": "electron.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"wait-on http://localhost:3000 && electron .\"",
+    "dev:backend": "cd backend && node server.js",
+    "dev:frontend": "cd frontend && npm start",
+    "dev:simple": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "cd frontend && npm run build",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "setup": "node setup.js",
+    "test": "cd backend && node tests/api.test.js",
+    "publish": "electron-builder --publish always"
+  },
+  "build": {
+    "appId": "com.financialmanager.app",
+    "productName": "Financial Manager",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron.js",
+      "backend/**/*",
+      "frontend/build/**/*",
+      "!backend/node_modules",
+      "!frontend/node_modules"
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "icon": "assets/icon.png"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "seu-usuario",
+      "repo": "financial-manager"
+    }
+  },
+  "dependencies": {
+    "electron": "^27.0.0",
+    "electron-updater": "^6.1.4"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron-builder": "^24.6.4",
+    "wait-on": "^7.0.1"
+  },
+  "keywords": ["finance", "password-manager", "electron"],
+  "author": "Your Name",
+  "license": "MIT"
+}
