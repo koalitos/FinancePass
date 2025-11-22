@@ -1,0 +1,46 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGradient)"/>
+  
+  <!-- Shield shape -->
+  <path d="M256 80 L160 120 L160 240 C160 320 256 400 256 400 C256 400 352 320 352 240 L352 120 Z" 
+        fill="url(#shieldGradient)" 
+        stroke="#ffffff" 
+        stroke-width="8"/>
+  
+  <!-- Dollar sign -->
+  <g transform="translate(256, 240)">
+    <!-- Vertical line -->
+    <rect x="-8" y="-100" width="16" height="200" fill="#ffffff" rx="8"/>
+    
+    <!-- S shape -->
+    <path d="M -40 -60 C -40 -80, -20 -90, 0 -90 C 20 -90, 40 -80, 40 -60 C 40 -40, 20 -30, 0 -30 C -20 -30, -40 -20, -40 0 C -40 20, -20 30, 0 30 C 20 30, 40 20, 40 0" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="24" 
+          stroke-linecap="round"/>
+  </g>
+  
+  <!-- Lock icon (small, bottom right) -->
+  <g transform="translate(380, 380)">
+    <rect x="-20" y="-10" width="40" height="35" rx="5" fill="#ffffff" opacity="0.9"/>
+    <path d="M -12 -10 L -12 -20 C -12 -26, -6 -32, 0 -32 C 6 -32, 12 -26, 12 -20 L 12 -10" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="5" 
+          opacity="0.9"/>
+    <circle cx="0" cy="5" r="4" fill="#10b981"/>
+  </g>
+</svg>

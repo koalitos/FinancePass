@@ -16,7 +16,8 @@
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "setup": "node setup.js",
     "test": "cd backend && node tests/api.test.js",
-    "publish": "electron-builder --publish always"
+    "publish": "electron-builder --publish always",
+    "generate-icons": "node scripts/generate-icons.js"
   },
   "build": {
     "appId": "com.financialmanager.app",
@@ -56,9 +57,11 @@
   "devDependencies": {
     "concurrently": "^8.2.0",
     "electron-builder": "^24.6.4",
-    "wait-on": "^7.0.1"
+    "wait-on": "^7.0.1",
+    "sharp": "^0.33.0",
+    "png-to-ico": "^2.1.8"
   },
-  "keywords": ["finance", "password-manager", "electron"],
-  "author": "Your Name",
-  "license": "MIT"
+  "keywords": ["finance", "password-manager", "electron", "privacy", "open-source", "offline"],
+  "author": "FinancePass Team",
+  "license": "CC-BY-NC-4.0"
 }
