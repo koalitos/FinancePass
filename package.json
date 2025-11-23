@@ -1,6 +1,6 @@
 {
   "name": "financial-manager",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sistema de Gerenciamento Financeiro e Senhas",
   "main": "electron.js",
   "publish": {
