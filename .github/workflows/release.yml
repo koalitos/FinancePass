@@ -65,7 +65,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: win-dist
-          path: dist/**/*
+          path: |
+            dist/*.exe
+            dist/*.exe.blockmap
+            dist/*.yml
 
   build-mac:
     name: macOS Build
@@ -118,7 +121,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mac-dist
-          path: dist/**/*
+          path: |
+            dist/*.dmg
+            dist/*.dmg.blockmap
+            dist/*.yml
 
   build-linux:
     name: Linux Build
@@ -170,7 +176,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-dist
-          path: dist/**/*
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.yml
 
   release:
     name: Generate GitHub Release
@@ -202,8 +211,10 @@ jobs:
           name: "FinancePass ${{ github.ref_name }}"
           tag_name: ${{ github.ref_name }}
           files: |
-            release/win/**
-            release/mac/**
-            release/linux/**
+            release/win/*
+            release/mac/*
+            release/linux/*
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
