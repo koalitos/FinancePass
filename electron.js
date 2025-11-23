@@ -286,9 +286,19 @@ async function createWindow() {
 
   // Verificar atualizações após 3 segundos
   if (!isDev) {
+    console.log('🔍 Agendando verificação de atualizações...');
     setTimeout(() => {
-      autoUpdater.checkForUpdates();
+      console.log('🔍 Verificando atualizações agora...');
+      autoUpdater.checkForUpdates()
+        .then(result => {
+          console.log('✅ Verificação de atualizações concluída:', result);
+        })
+        .catch(err => {
+          console.error('❌ Erro ao verificar atualizações:', err);
+        });
     }, 3000);
+  } else {
+    console.log('⚠️ Modo desenvolvimento - auto-update desabilitado');
   }
 }
 
