@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, User, Mail, Phone, MessageSquare, Palette } from 'lucide-react';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 const AVATAR_COLORS = [
   '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
@@ -7,6 +8,8 @@ const AVATAR_COLORS = [
 ];
 
 const PersonForm = ({ onClose, onSave, person }) => {
+  // Fechar modal com ESC
+  useEscapeKey(onClose);
   const [formData, setFormData] = useState({
     name: '',
     relationship: '',

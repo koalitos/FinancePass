@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createExpense, updateExpense, getCategories, getPeople } from '../../api/api';
 import { X } from 'lucide-react';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 const ExpenseForm = ({ expense, onClose, onSave }) => {
+  // Fechar modal com ESC
+  useEscapeKey(onClose);
   const [formData, setFormData] = useState({
     description: '',
     amount: '',

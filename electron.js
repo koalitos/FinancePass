@@ -283,12 +283,22 @@ async function createWindow() {
     }
   });
 
-  // Prevenir navegação externa
+  // Prevenir navegação externa - abrir no navegador padrão
   mainWindow.webContents.on('will-navigate', (event, url) => {
     if (!url.startsWith('http://localhost') && !url.startsWith('file://')) {
       event.preventDefault();
       require('electron').shell.openExternal(url);
     }
+  });
+
+  // Abrir links externos (target="_blank", window.open) no navegador padrão
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // Se for link externo, abrir no navegador
+    if (!url.startsWith('http://localhost') && !url.startsWith('file://')) {
+      require('electron').shell.openExternal(url);
+      return { action: 'deny' }; // Não abrir nova janela do Electron
+    }
+    return { action: 'allow' }; // Permitir se for localhost
   });
 
   // Verificar atualizações após 3 segundos

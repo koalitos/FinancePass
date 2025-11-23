@@ -102,40 +102,43 @@ const Dashboard = () => {
   const currentYear = currentDate.getFullYear();
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-dark-muted mt-1">📅 Período: {currentMonth} {currentYear}</p>
+    <div className="page-container">
+      <div className="page-header">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <p className="text-dark-muted text-sm">📅 {currentMonth} {currentYear}</p>
+          </div>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cards.map((card, index) => {
-          const Icon = card.icon;
-          return (
-            <div key={index} className="card">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-dark-muted text-sm mb-1">{card.title}</p>
-                  <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
-                </div>
-                <div className={`p-3 rounded-lg ${card.bgColor}`}>
-                  <Icon className={card.color} size={24} />
+      <div className="page-content space-y-4">
+        <div className="grid-compact grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {cards.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <div key={index} className="card-compact">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-dark-muted text-xs mb-1">{card.title}</p>
+                    <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
+                  </div>
+                  <div className={`p-2 rounded-lg ${card.bgColor}`}>
+                    <Icon className={card.color} size={20} />
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-        {/* Resumo Mensal */}
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Calendar className="text-primary" size={24} />
-            Resumo Mensal
-          </h2>
+        <div className="grid-compact grid-cols-1 lg:grid-cols-2">
+          {/* Resumo Mensal */}
+          <div className="card-compact">
+            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <Calendar className="text-primary" size={20} />
+              Resumo Mensal
+            </h2>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-dark-muted">Total de Receitas:</span>
@@ -158,53 +161,54 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Contas Próximas */}
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <AlertCircle className="text-warning" size={24} />
-            Contas Próximas (7 dias)
-          </h2>
-          {upcomingBills.length === 0 ? (
-            <p className="text-dark-muted text-center py-4">Nenhuma conta próxima</p>
-          ) : (
-            <div className="space-y-3">
-              {upcomingBills.map((bill) => (
-                <div 
-                  key={bill.id} 
-                  className={`p-3 rounded-lg border-l-4 ${
-                    bill.daysUntil === 0 
-                      ? 'bg-red-900/20 border-red-500' 
-                      : bill.daysUntil <= 3 
-                      ? 'bg-orange-900/20 border-orange-500' 
-                      : 'bg-yellow-900/20 border-yellow-500'
-                  }`}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <p className="font-semibold">{bill.name}</p>
-                      <p className="text-sm text-dark-muted mt-1">
-                        Vencimento: Dia {bill.due_day}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-danger">
-                        R$ {bill.amount.toFixed(2)}
-                      </p>
-                      <p className={`text-xs font-semibold mt-1 ${
-                        bill.daysUntil === 0 
-                          ? 'text-red-400' 
-                          : bill.daysUntil <= 3 
-                          ? 'text-orange-400' 
-                          : 'text-yellow-400'
-                      }`}>
-                        {bill.daysUntil === 0 ? 'Hoje!' : `${bill.daysUntil} dias`}
-                      </p>
+          {/* Contas Próximas */}
+          <div className="card-compact">
+            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <AlertCircle className="text-warning" size={20} />
+              Contas Próximas (7 dias)
+            </h2>
+            {upcomingBills.length === 0 ? (
+              <p className="text-dark-muted text-center py-3 text-sm">Nenhuma conta próxima</p>
+            ) : (
+              <div className="space-y-compact">
+                {upcomingBills.map((bill) => (
+                  <div 
+                    key={bill.id} 
+                    className={`p-3 rounded-lg border-l-4 ${
+                      bill.daysUntil === 0 
+                        ? 'bg-red-900/20 border-red-500' 
+                        : bill.daysUntil <= 3 
+                        ? 'bg-orange-900/20 border-orange-500' 
+                        : 'bg-yellow-900/20 border-yellow-500'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-semibold">{bill.name}</p>
+                        <p className="text-sm text-dark-muted mt-1">
+                          Vencimento: Dia {bill.due_day}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-danger">
+                          R$ {bill.amount.toFixed(2)}
+                        </p>
+                        <p className={`text-xs font-semibold mt-1 ${
+                          bill.daysUntil === 0 
+                            ? 'text-red-400' 
+                            : bill.daysUntil <= 3 
+                            ? 'text-orange-400' 
+                            : 'text-yellow-400'
+                        }`}>
+                          {bill.daysUntil === 0 ? 'Hoje!' : `${bill.daysUntil} dias`}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

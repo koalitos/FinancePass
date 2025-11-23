@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToastContext } from '../../contexts/ToastContext';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 import api from '../../api/api';
 
 const InstallmentForm = ({ onSuccess, onCancel }) => {
+  const navigate = useNavigate();
+  
+  // Fechar/voltar com ESC
+  useEscapeKey(() => {
+    if (onCancel) {
+      onCancel();
+    } else {
+      navigate('/expenses/installments');
+    }
+  });
   const toast = useToastContext();
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
@@ -56,7 +68,13 @@ const InstallmentForm = ({ onSuccess, onCancel }) => {
       
       console.log('Resposta do servidor:', response);
       toast.success('Compra parcelada criada com sucesso!');
-      if (onSuccess) onSuccess();
+      
+      // Navegar de volta para a lista de parcelamentos
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/expenses/installments');
+      }
     } catch (error) {
       console.error('Erro completo:', error);
       console.error('Resposta do erro:', error.response?.data);
@@ -225,15 +243,19 @@ const InstallmentForm = ({ onSuccess, onCancel }) => {
           >
             ✨ Criar Compra Parcelada
           </button>
-          {onCancel && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex-1 bg-dark-border text-dark-text py-4 px-6 rounded-xl hover:bg-dark-border/70 transition-all font-semibold text-lg"
-            >
-              Cancelar
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => {
+              if (onCancel) {
+                onCancel();
+              } else {
+                navigate('/expenses/installments');
+              }
+            }}
+            className="flex-1 bg-dark-border text-dark-text py-4 px-6 rounded-xl hover:bg-dark-border/70 transition-all font-semibold text-lg"
+          >
+            Cancelar
+          </button>
         </div>
       </form>
     </div>

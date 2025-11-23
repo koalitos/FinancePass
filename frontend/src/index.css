@@ -91,18 +91,61 @@ code {
   animation: slide-up 0.3s ease-out;
 }
 
-/* Animação para notificação de atualização */
-@keyframes slide-up {
+/* Fade in animation */
+@keyframes fade-in {
   from {
-    transform: translateY(100%);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
     opacity: 1;
   }
 }
 
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* Layout otimizado - sem rolagem */
+.page-container {
+  @apply h-full flex flex-col;
+}
+
+.page-header {
+  @apply flex-shrink-0 mb-4;
+}
+
+.page-content {
+  @apply flex-1 overflow-y-auto;
+}
+
+/* Tabelas responsivas */
+.table-container {
+  @apply overflow-x-auto;
+}
+
+.table-compact {
+  @apply w-full text-sm;
+}
+
+.table-compact th {
+  @apply px-3 py-2;
+}
+
+.table-compact td {
+  @apply px-3 py-2;
+}
+
+/* Cards compactos */
+.card-compact {
+  @apply bg-dark-card border border-dark-border rounded-lg p-3;
+}
+
+/* Espaçamento reduzido */
+.space-y-compact > * + * {
+  margin-top: 0.75rem;
+}
+
+/* Grid responsivo compacto */
+.grid-compact {
+  @apply grid gap-3;
 }

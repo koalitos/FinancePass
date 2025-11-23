@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { CreditCard, Trash2, Eye, Calendar, DollarSign } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CreditCard, Trash2, Eye, Calendar, DollarSign, Plus } from 'lucide-react';
 import { useToastContext } from '../../contexts/ToastContext';
 import api from '../../api/api';
 
 const InstallmentList = () => {
+  const navigate = useNavigate();
   const toast = useToastContext();
   const [installments, setInstallments] = useState([]);
   const [selectedInstallment, setSelectedInstallment] = useState(null);
@@ -85,12 +87,26 @@ const InstallmentList = () => {
           </h1>
           <p className="text-dark-muted mt-1">Gerencie suas compras divididas em parcelas</p>
         </div>
+        <button
+          onClick={() => navigate('/expenses/installments/new')}
+          className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl"
+        >
+          <Plus size={20} />
+          Nova Compra Parcelada
+        </button>
       </div>
 
       {installments.length === 0 ? (
         <div className="card text-center py-12">
           <CreditCard size={64} className="text-dark-muted mx-auto mb-4" />
-          <p className="text-dark-muted text-lg">Nenhuma compra parcelada cadastrada</p>
+          <p className="text-dark-muted text-lg mb-4">Nenhuma compra parcelada cadastrada</p>
+          <button
+            onClick={() => navigate('/expenses/installments/new')}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-blue-700 transition-all font-semibold inline-flex items-center gap-2"
+          >
+            <Plus size={20} />
+            Criar Primeira Compra Parcelada
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">

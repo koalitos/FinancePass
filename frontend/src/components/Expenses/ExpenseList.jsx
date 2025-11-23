@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { getExpenses, deleteExpense } from '../../api/api';
 import { Plus, Trash2, Edit } from 'lucide-react';
+import { useConfirm } from '../../hooks/useConfirm';
+import { useToastContext } from '../../contexts/ToastContext';
+import ConfirmModal from '../Common/ConfirmModal';
 import ExpenseForm from './ExpenseForm';
 
 const ExpenseList = () => {
+  const toast = useToastContext();
+  const confirmDialog = useConfirm();
   const [expenses, setExpenses] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingExpense, setEditingExpense] = useState(null);
@@ -63,14 +68,23 @@ const ExpenseList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Deseja realmente excluir este gasto?')) {
-      try {
-        await deleteExpense(id);
-        loadExpenses();
-      } catch (error) {
-        console.error('Erro ao excluir gasto:', error);
+    confirmDialog.confirm({
+      title: 'Excluir Despesa',
+      message: 'Deseja realmente excluir esta despesa?\n\nEsta ação não pode ser desfeita.',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await deleteExpense(id);
+          loadExpenses();
+          toast.success('Despesa excluída com sucesso!');
+        } catch (error) {
+          toast.error('Erro ao excluir despesa');
+          console.error('Erro ao excluir gasto:', error);
+        }
       }
-    }
+    });
   };
 
   const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
@@ -79,15 +93,15 @@ const ExpenseList = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">💸 Gastos</h1>
-          <p className="text-dark-muted mt-1">Total: R$ {total.toFixed(2)}</p>
+          <h1 className="text-2xl font-bold">💸 Gastos</h1>
+          <p className="text-dark-muted text-sm">Total: R$ {total.toFixed(2)}</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => window.location.href = '/expenses/installments/new'}
-            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2"
+            className="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2 text-sm"
           >
-            <Plus size={20} />
+            <Plus size={18} />
             Compra Parcelada
           </button>
           <button
@@ -95,9 +109,9 @@ const ExpenseList = () => {
               setEditingExpense(null);
               setShowForm(true);
             }}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 text-sm"
           >
-            <Plus size={20} />
+            <Plus size={18} />
             Novo Gasto
           </button>
         </div>
@@ -196,6 +210,18 @@ const ExpenseList = () => {
           }}
         />
       )}
+
+      {/* Modal de Confirmação */}
+      <ConfirmModal
+        isOpen={confirmDialog.isOpen}
+        onClose={confirmDialog.cancel}
+        onConfirm={confirmDialog.data.onConfirm}
+        title={confirmDialog.data.title}
+        message={confirmDialog.data.message}
+        confirmText={confirmDialog.data.confirmText}
+        cancelText={confirmDialog.data.cancelText}
+        type={confirmDialog.data.type}
+      />
     </div>
   );
 };

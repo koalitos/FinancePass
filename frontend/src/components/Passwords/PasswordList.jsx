@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { getPasswords, deletePassword, getPassword } from '../../api/api';
 import { Plus, Search, Eye, EyeOff, Copy, Trash2, Edit, Star, Lock } from 'lucide-react';
 import { useToastContext } from '../../contexts/ToastContext';
+import { useConfirm } from '../../hooks/useConfirm';
+import ConfirmModal from '../Common/ConfirmModal';
 import PasswordForm from './PasswordForm';
 import FolderManager from './FolderManager';
 import PasswordProtection from './PasswordProtection';
 
 const PasswordList = () => {
   const toast = useToastContext();
+  const confirmDialog = useConfirm();
   const [passwords, setPasswords] = useState([]);
   const [filteredPasswords, setFilteredPasswords] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,14 +58,23 @@ const PasswordList = () => {
   }, [searchTerm, passwords, selectedFolderId]);
 
   const handleDelete = async (id) => {
-    if (window.confirm('Deseja realmente excluir esta senha?')) {
-      try {
-        await deletePassword(id);
-        loadPasswords();
-      } catch (error) {
-        console.error('Erro ao excluir senha:', error);
+    confirmDialog.confirm({
+      title: 'Excluir Senha',
+      message: 'Deseja realmente excluir esta senha?\n\nEsta ação não pode ser desfeita.',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await deletePassword(id);
+          loadPasswords();
+          toast.success('Senha excluída com sucesso!');
+        } catch (error) {
+          console.error('Erro ao excluir senha:', error);
+          toast.error('Erro ao excluir senha');
+        }
       }
-    }
+    });
   };
 
   const handleEdit = async (id) => {
@@ -120,10 +132,10 @@ const PasswordList = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-4">
         <div>
-          <h1 className="text-3xl font-bold">🔐 Senhas</h1>
-          <p className="text-dark-muted text-sm mt-1">
+          <h1 className="text-2xl font-bold">🔐 Senhas</h1>
+          <p className="text-dark-muted text-xs">
             Gerencie suas credenciais com segurança
           </p>
         </div>
@@ -141,9 +153,9 @@ const PasswordList = () => {
               setEditingPassword(null);
               setShowForm(true);
             }}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 text-sm px-3 py-2"
           >
-            <Plus size={20} />
+            <Plus size={18} />
             Nova Senha
           </button>
         </div>
@@ -294,6 +306,18 @@ const PasswordList = () => {
           selectedFolderId={selectedFolderId}
         />
       )}
+
+      {/* Modal de Confirmação */}
+      <ConfirmModal
+        isOpen={confirmDialog.isOpen}
+        onClose={confirmDialog.cancel}
+        onConfirm={confirmDialog.data.onConfirm}
+        title={confirmDialog.data.title}
+        message={confirmDialog.data.message}
+        confirmText={confirmDialog.data.confirmText}
+        cancelText={confirmDialog.data.cancelText}
+        type={confirmDialog.data.type}
+      />
     </div>
   );
 };

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPassword, updatePassword } from '../../api/api';
 import { X, Eye, EyeOff } from 'lucide-react';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 const PasswordForm = ({ password, onClose, onSave, selectedFolderId }) => {
+  // Fechar modal com ESC
+  useEscapeKey(onClose);
   const [formData, setFormData] = useState({
     title: '',
     username: '',
@@ -16,6 +19,8 @@ const PasswordForm = ({ password, onClose, onSave, selectedFolderId }) => {
   });
   const [folders, setFolders] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [showNewFolderInput, setShowNewFolderInput] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
 
   useEffect(() => {
     loadFolders();
@@ -37,6 +42,28 @@ const PasswordForm = ({ password, onClose, onSave, selectedFolderId }) => {
       setFolders(data);
     } catch (error) {
       console.error('Erro ao carregar pastas:', error);
+    }
+  };
+
+  const handleCreateFolder = async () => {
+    if (!newFolderName.trim()) return;
+    
+    try {
+      const response = await fetch('http://localhost:5174/api/password-folders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newFolderName, icon: '📁', color: '#3b82f6' })
+      });
+      
+      if (response.ok) {
+        const newFolder = await response.json();
+        await loadFolders();
+        setFormData({ ...formData, folder_id: newFolder.id });
+        setNewFolderName('');
+        setShowNewFolderInput(false);
+      }
+    } catch (error) {
+      console.error('Erro ao criar pasta:', error);
     }
   };
 
@@ -161,18 +188,59 @@ const PasswordForm = ({ password, onClose, onSave, selectedFolderId }) => {
 
             <div>
               <label className="block text-sm font-semibold text-dark-text mb-2">📁 Pasta</label>
-              <select
-                value={formData.folder_id}
-                onChange={(e) => setFormData({ ...formData, folder_id: e.target.value })}
-                className="w-full px-4 py-3 bg-dark-bg border-2 border-dark-border text-dark-text rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              >
-                <option value="">Sem pasta</option>
-                {folders.map((folder) => (
-                  <option key={folder.id} value={folder.id}>
-                    {folder.icon} {folder.name}
-                  </option>
-                ))}
-              </select>
+              {showNewFolderInput ? (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newFolderName}
+                      onChange={(e) => setNewFolderName(e.target.value)}
+                      placeholder="Nome da nova pasta"
+                      className="flex-1 px-4 py-3 bg-dark-bg border-2 border-dark-border text-dark-text rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCreateFolder}
+                      className="px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90"
+                    >
+                      ✓
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowNewFolderInput(false);
+                        setNewFolderName('');
+                      }}
+                      className="px-4 py-3 bg-dark-border text-dark-text rounded-lg hover:bg-dark-border/70"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <select
+                    value={formData.folder_id}
+                    onChange={(e) => setFormData({ ...formData, folder_id: e.target.value })}
+                    className="w-full px-4 py-3 bg-dark-bg border-2 border-dark-border text-dark-text rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  >
+                    <option value="">Sem pasta</option>
+                    {folders.map((folder) => (
+                      <option key={folder.id} value={folder.id}>
+                        {folder.icon} {folder.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setShowNewFolderInput(true)}
+                    className="w-full px-3 py-2 bg-dark-bg border border-dark-border text-dark-text rounded-lg hover:bg-dark-border transition-all text-sm flex items-center justify-center gap-2"
+                  >
+                    ➕ Nova Pasta
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

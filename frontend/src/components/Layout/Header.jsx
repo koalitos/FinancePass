@@ -8,13 +8,30 @@ const Header = ({ toggleSidebar, user, onLogout }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState(user?.name || 'Usuário');
+  const [userPhoto, setUserPhoto] = useState(user?.photo || null);
   const menuRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const handleSaveName = () => {
-    const updatedUser = { ...user, name: newName };
+    const updatedUser = { ...user, name: newName, photo: userPhoto };
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setIsEditingName(false);
     window.location.reload(); // Recarregar para atualizar o nome
+  };
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const photoData = reader.result;
+        setUserPhoto(photoData);
+        const updatedUser = { ...user, name: user?.name || 'Usuário', photo: photoData };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        window.location.reload();
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Fechar menu ao clicar fora
@@ -53,8 +70,12 @@ const Header = ({ toggleSidebar, user, onLogout }) => {
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="flex items-center gap-2 p-2 hover:bg-dark-border rounded-lg transition"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg">
-              <User size={16} className="text-white" />
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+              {userPhoto ? (
+                <img src={userPhoto} alt="User" className="w-full h-full object-cover" />
+              ) : (
+                <User size={16} className="text-white" />
+              )}
             </div>
             <span className="text-sm font-semibold">{user?.name || 'Usuário'}</span>
           </button>
@@ -62,6 +83,32 @@ const Header = ({ toggleSidebar, user, onLogout }) => {
           {showUserMenu && (
             <div className="absolute right-0 mt-2 w-72 bg-dark-card border-2 border-dark-border rounded-xl shadow-2xl overflow-hidden z-50">
               <div className="px-4 py-4 border-b border-dark-border bg-gradient-to-r from-primary/10 to-blue-600/10">
+                {/* Avatar grande */}
+                <div className="flex flex-col items-center mb-3">
+                  <div className="relative group">
+                    <div className="w-20 h-20 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+                      {userPhoto ? (
+                        <img src={userPhoto} alt="User" className="w-full h-full object-cover" />
+                      ) : (
+                        <User size={32} className="text-white" />
+                      )}
+                    </div>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Edit2 size={20} className="text-white" />
+                    </button>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                  />
+                </div>
+
                 {isEditingName ? (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">

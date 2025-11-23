@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Upload, Shield, AlertCircle } from 'lucide-react';
 import { useToastContext } from '../../contexts/ToastContext';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 import api from '../../api/api';
 
 const BackupManager = () => {
@@ -13,6 +14,21 @@ const BackupManager = () => {
   const [error, setError] = useState('');
   const [backing, setBacking] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  
+  // Fechar modais com ESC
+  useEscapeKey(() => {
+    if (showBackupModal) {
+      setShowBackupModal(false);
+      setBackupPassword('');
+      setError('');
+    }
+    if (showRestoreModal) {
+      setShowRestoreModal(false);
+      setRestorePassword('');
+      setRestoreFile(null);
+      setError('');
+    }
+  }, showBackupModal || showRestoreModal);
 
   const handleBackup = async () => {
     if (!backupPassword) {

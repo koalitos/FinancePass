@@ -272,8 +272,8 @@ const SystemStatus = () => {
         </div>
       </div>
 
-      {/* Backup e Gerenciamento de Dados */}
-      <DataManagement />
+      {/* Backup e Gerenciamento de Dados - Movido para /backup */}
+      {/* <DataManagement /> */}
     </div>
   );
 };
