@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Lock, Wallet, TrendingUp, Users, CreditCard, Smartphone, ChevronDown, ChevronRight, Calendar, CreditCard as InstallmentIcon, Receipt, AlertCircle, Shield, Briefcase, Circle } from 'lucide-react';
+import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, Briefcase, Circle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import KofiButton from '../Common/KofiButton';
 

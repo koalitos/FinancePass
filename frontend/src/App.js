@@ -31,7 +31,7 @@ function App() {
   const [isFirstAccess, setIsFirstAccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [backendError, setBackendError] = useState(false);
+  const [backendError] = useState(false);
 
   useEffect(() => {
     checkAuth();

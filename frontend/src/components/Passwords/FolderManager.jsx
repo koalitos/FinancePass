@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Folder, Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
+import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import api from '../../api/api';
 
 const FolderManager = ({ onSelectFolder, selectedFolderId }) => {

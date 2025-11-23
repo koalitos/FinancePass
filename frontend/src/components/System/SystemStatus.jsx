@@ -4,7 +4,7 @@ import { useToastContext } from '../../contexts/ToastContext';
 import api from '../../api/api';
 
 const SystemStatus = () => {
-  const toast = useToastContext();
+  // const toast = useToastContext(); // Removido - não utilizado
   const [status, setStatus] = useState({
     backend: { status: 'checking', message: 'Verificando...', responseTime: null },
     database: { status: 'checking', message: 'Verificando...', tables: [] },
