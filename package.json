@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "description": "Sistema de Gerenciamento Financeiro e Senhas",
   "main": "electron.js",
+  "publish": {
+    "provider": "github",
+    "owner": "koalitos",
+    "repo": "FinancePass"
+  },
+  "author": "Koalitos",
+  "license": "MIT",
   "scripts": {
     "start": "node_modules\\.bin\\electron .",
     "start:backend": "cd backend && node server.js",
@@ -28,7 +35,8 @@
     "clean": "rimraf dist frontend/build",
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "release": "node scripts/create-release.js"
+    "release": "node scripts/create-release.js",
+    "release-notes": "node scripts/generate-release-notes.js"
   },
   "build": {
     "appId": "com.koalitos.financepass",
