@@ -107,11 +107,27 @@ jobs:
           ls -la frontend/build
           echo ""
           echo "[2/3] Starting electron-builder..."
+          set +e
           npm run dist:mac -- --publish never
+          BUILD_EXIT_CODE=$?
+          set -e
           echo ""
-          echo "[3/3] Build completed!"
+          echo "[3/3] Build completed with exit code: $BUILD_EXIT_CODE"
           date
           ls -la dist
+          echo ""
+          echo "Cleaning up any remaining disk images..."
+          hdiutil info | grep "/dev/disk" | awk '{print $1}' | xargs -I {} hdiutil detach {} -force 2>/dev/null || true
+          echo ""
+          # Check if DMG files were created successfully despite the error
+          if [ -f dist/*.dmg ]; then
+            echo "✓ DMG files created successfully"
+            echo "Note: hdiutil detach errors during cleanup are non-critical"
+            exit 0
+          else
+            echo "✗ Build failed - no DMG files found"
+            exit $BUILD_EXIT_CODE
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false

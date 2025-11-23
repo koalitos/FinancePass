@@ -135,7 +135,9 @@
           "path": "/Applications"
         }
       ],
-      "title": "FinancePass ${version}"
+      "title": "FinancePass ${version}",
+      "sign": false,
+      "writeUpdateInfo": false
     },
     "linux": {
       "target": [
