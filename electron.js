@@ -4,6 +4,9 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 
+// Desabilitar aceleração de hardware para evitar erros de GPU
+app.disableHardwareAcceleration();
+
 // Detectar modo dev de forma mais robusta
 let isDev;
 if (process.env.NODE_ENV === 'production') {
@@ -203,13 +206,14 @@ async function createWindow() {
     Menu.setApplicationMenu(null);
   }
 
-  // Verificar se frontend dev está rodando
-  const frontendDevRunning = await checkPort(5173);
-  const startUrl = frontendDevRunning
+  // Em dev, sempre usar porta do frontend (5173)
+  // Em prod, usar o backend que serve o frontend buildado
+  const startUrl = isDev
     ? 'http://localhost:5173'
     : `http://localhost:${backendPort}`;
 
   console.log('🌐 Loading URL:', startUrl);
+  console.log('🔧 isDev:', isDev);
 
   mainWindow.loadURL(startUrl).catch(err => {
     console.error('❌ Failed to load URL:', err);
@@ -532,6 +536,22 @@ app.on('will-quit', () => {
   stopBackend();
 });
 
+// Função para comparar versões (semver)
+function compareVersions(v1, v2) {
+  const parts1 = v1.replace(/^v/, '').split('.').map(Number);
+  const parts2 = v2.replace(/^v/, '').split('.').map(Number);
+  
+  for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+    const part1 = parts1[i] || 0;
+    const part2 = parts2[i] || 0;
+    
+    if (part1 > part2) return 1;
+    if (part1 < part2) return -1;
+  }
+  
+  return 0;
+}
+
 // Tratamento de erros
 process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);
@@ -547,17 +567,35 @@ autoUpdater.on('checking-for-update', () => {
 });
 
 autoUpdater.on('update-available', (info) => {
-  console.log('🎉 Atualização disponível:', info.version);
-  sendStatusToWindow('Atualização disponível!');
+  const currentVersion = app.getVersion();
+  const newVersion = info.version;
   
-  // Enviar para o frontend mostrar notificação no canto
-  if (mainWindow) {
-    mainWindow.webContents.send('update-available', info);
+  console.log('🎉 Atualização disponível!');
+  console.log('   Versão atual:', currentVersion);
+  console.log('   Nova versão:', newVersion);
+  
+  // Validar se a nova versão é realmente maior
+  if (compareVersions(newVersion, currentVersion) > 0) {
+    console.log('✅ Nova versão é maior - mostrando notificação');
+    sendStatusToWindow('Atualização disponível!');
+    
+    // Enviar para o frontend mostrar notificação no canto
+    if (mainWindow) {
+      mainWindow.webContents.send('update-available', info);
+    }
+  } else {
+    console.log('⚠️ Nova versão não é maior - ignorando');
+    console.log('   Comparação:', newVersion, 'vs', currentVersion);
   }
 });
 
-autoUpdater.on('update-not-available', () => {
+autoUpdater.on('update-not-available', (info) => {
+  const currentVersion = app.getVersion();
   console.log('✅ App está atualizado');
+  console.log('   Versão atual:', currentVersion);
+  if (info && info.version) {
+    console.log('   Última versão disponível:', info.version);
+  }
   sendStatusToWindow('Aplicação está atualizada.');
 });
 

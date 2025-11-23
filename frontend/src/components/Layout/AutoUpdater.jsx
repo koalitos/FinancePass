@@ -10,57 +10,67 @@ const AutoUpdater = () => {
 
   useEffect(() => {
     // Verificar se está rodando no Electron
-    if (window.electron) {
-      // Listener para atualização disponível
-      window.electron.onUpdateAvailable((info) => {
-        console.log('Atualização disponível:', info);
-        setUpdateInfo(info);
-        setUpdateAvailable(true);
-        setShowNotification(true);
-      });
-
-      // Listener para progresso do download
-      window.electron.onDownloadProgress((progress) => {
-        console.log('Progresso do download:', progress);
-        setDownloading(true);
-        setDownloadProgress(progress.percent);
-      });
-
-      // Listener para download completo
-      window.electron.onUpdateDownloaded(() => {
-        console.log('Atualização baixada');
-        setDownloading(false);
-        setDownloadProgress(100);
-      });
-
-      // Verificar atualizações ao iniciar
-      checkForUpdates();
-
-      // Verificar atualizações a cada 30 minutos
-      const interval = setInterval(() => {
-        checkForUpdates();
-      }, 30 * 60 * 1000);
-
-      return () => clearInterval(interval);
+    if (!window.electron || typeof window.electron.on !== 'function') {
+      console.log('AutoUpdater: Não está rodando no Electron');
+      return;
     }
+
+    console.log('AutoUpdater: Configurando listeners...');
+
+    // Listener para atualização disponível
+    const unsubscribeAvailable = window.electron.on('update-available', (info) => {
+      console.log('Atualização disponível:', info);
+      setUpdateInfo(info);
+      setUpdateAvailable(true);
+      setShowNotification(true);
+    });
+
+    // Listener para progresso do download
+    const unsubscribeProgress = window.electron.on('download-progress', (progress) => {
+      console.log('Progresso do download:', progress);
+      setDownloading(true);
+      setDownloadProgress(progress.percent || 0);
+    });
+
+    // Listener para download completo
+    const unsubscribeDownloaded = window.electron.on('update-downloaded', () => {
+      console.log('Atualização baixada');
+      setDownloading(false);
+      setDownloadProgress(100);
+    });
+
+    // Verificar atualizações ao iniciar
+    checkForUpdates();
+
+    // Verificar atualizações a cada 30 minutos
+    const interval = setInterval(() => {
+      checkForUpdates();
+    }, 30 * 60 * 1000);
+
+    return () => {
+      clearInterval(interval);
+      if (typeof unsubscribeAvailable === 'function') unsubscribeAvailable();
+      if (typeof unsubscribeProgress === 'function') unsubscribeProgress();
+      if (typeof unsubscribeDownloaded === 'function') unsubscribeDownloaded();
+    };
   }, []);
 
   const checkForUpdates = () => {
-    if (window.electron) {
-      window.electron.checkForUpdates();
+    if (window.electron && typeof window.electron.send === 'function') {
+      window.electron.send('check-for-updates');
     }
   };
 
   const downloadUpdate = () => {
-    if (window.electron) {
-      window.electron.downloadUpdate();
+    if (window.electron && typeof window.electron.send === 'function') {
+      window.electron.send('download-update');
       setDownloading(true);
     }
   };
 
   const installUpdate = () => {
-    if (window.electron) {
-      window.electron.installUpdate();
+    if (window.electron && typeof window.electron.send === 'function') {
+      window.electron.send('install-update');
     }
   };
 

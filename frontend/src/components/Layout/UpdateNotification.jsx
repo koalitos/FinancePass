@@ -10,41 +10,45 @@ const UpdateNotification = () => {
 
   useEffect(() => {
     // Verificar se está rodando no Electron
-    if (!window.electron) return;
+    if (!window.electron || typeof window.electron.on !== 'function') {
+      console.log('UpdateNotification: Não está rodando no Electron');
+      return;
+    }
+
+    console.log('UpdateNotification: Configurando listeners...');
 
     // Listener para atualização disponível
-    window.electron.on('update-available', (info) => {
+    const unsubscribeAvailable = window.electron.on('update-available', (info) => {
       console.log('Atualização disponível:', info);
       setUpdateInfo(info);
       setVisible(true);
     });
 
     // Listener para progresso do download
-    window.electron.on('download-progress', (progress) => {
+    const unsubscribeProgress = window.electron.on('download-progress', (progress) => {
       console.log('Progresso:', progress);
-      setDownloadProgress(progress.percent);
+      setDownloadProgress(progress.percent || 0);
     });
 
     // Listener para download completo
-    window.electron.on('update-downloaded', (info) => {
+    const unsubscribeDownloaded = window.electron.on('update-downloaded', (info) => {
       console.log('Download completo:', info);
       setDownloading(false);
       setDownloaded(true);
     });
 
     // Listener para quando começar a baixar
-    window.electron.on('update-downloading', () => {
+    const unsubscribeDownloading = window.electron.on('update-downloading', () => {
       console.log('Iniciando download...');
       setDownloading(true);
     });
 
     return () => {
-      if (window.electron) {
-        window.electron.removeAllListeners('update-available');
-        window.electron.removeAllListeners('download-progress');
-        window.electron.removeAllListeners('update-downloaded');
-        window.electron.removeAllListeners('update-downloading');
-      }
+      // Cleanup dos listeners
+      if (typeof unsubscribeAvailable === 'function') unsubscribeAvailable();
+      if (typeof unsubscribeProgress === 'function') unsubscribeProgress();
+      if (typeof unsubscribeDownloaded === 'function') unsubscribeDownloaded();
+      if (typeof unsubscribeDownloading === 'function') unsubscribeDownloading();
     };
   }, []);
 

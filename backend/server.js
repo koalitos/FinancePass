@@ -47,11 +47,18 @@ app.get('/api/health', (req, res) => {
 
 // Servir frontend em produção
 if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../frontend/build');
+  const fs = require('fs');
+  
+  // Tentar diferentes caminhos (dev vs produção empacotada)
+  let frontendPath = path.join(__dirname, '../frontend/build');
+  
+  // Se não existir, tentar caminho do app empacotado (resources/frontend/build)
+  if (!fs.existsSync(frontendPath)) {
+    frontendPath = path.join(__dirname, 'frontend/build');
+  }
+  
   console.log('📁 Servindo frontend de:', frontendPath);
   
-  // Verificar se o diretório existe
-  const fs = require('fs');
   if (fs.existsSync(frontendPath)) {
     console.log('✅ Diretório do frontend encontrado');
     

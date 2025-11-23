@@ -36,9 +36,29 @@ jobs:
         run: npm run build
 
       - name: Build Windows Installer
-        run: npm run dist:win
+        run: |
+          echo "========================================="
+          echo "Starting Windows build..."
+          echo "========================================="
+          echo "Time: $(Get-Date -Format 'HH:mm:ss')"
+          echo "Memory: $(Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='FreeGB';Expression={[math]::Round($_.FreePhysicalMemory/1MB,2)}})"
+          echo ""
+          echo "[1/4] Checking files..."
+          dir frontend\build
+          echo ""
+          echo "[2/4] Checking backend..."
+          dir backend
+          echo ""
+          echo "[3/4] Starting electron-builder..."
+          npm run dist:win -- --publish never
+          echo ""
+          echo "[4/4] Build completed!"
+          echo "Time: $(Get-Date -Format 'HH:mm:ss')"
+          dir dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: electron-builder
+        shell: pwsh
 
       - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
@@ -49,6 +69,7 @@ jobs:
   build-mac:
     name: macOS Build
     runs-on: macos-latest
+    timeout-minutes: 40
     timeout-minutes: 30
 
     steps:
@@ -73,10 +94,25 @@ jobs:
         run: npm run build
 
       - name: Build macOS Installer
-        run: npm run dist:mac
+        run: |
+          echo "========================================="
+          echo "Starting macOS build..."
+          echo "========================================="
+          date
+          echo ""
+          echo "[1/3] Checking files..."
+          ls -la frontend/build
+          echo ""
+          echo "[2/3] Starting electron-builder..."
+          npm run dist:mac -- --publish never
+          echo ""
+          echo "[3/3] Build completed!"
+          date
+          ls -la dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          DEBUG: electron-builder
 
       - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
@@ -87,6 +123,7 @@ jobs:
   build-linux:
     name: Linux Build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     timeout-minutes: 30
 
     steps:
@@ -111,9 +148,24 @@ jobs:
         run: npm run build
 
       - name: Build Linux Packages
-        run: npm run dist:linux
+        run: |
+          echo "========================================="
+          echo "Starting Linux build..."
+          echo "========================================="
+          date
+          echo ""
+          echo "[1/3] Checking files..."
+          ls -la frontend/build
+          echo ""
+          echo "[2/3] Starting electron-builder..."
+          npm run dist:linux -- --publish never
+          echo ""
+          echo "[3/3] Build completed!"
+          date
+          ls -la dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: electron-builder
 
       - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
