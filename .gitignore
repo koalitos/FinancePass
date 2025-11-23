@@ -55,7 +55,7 @@ temp/
 *.tmp
 
 # Package manager
-package-lock.json
+# package-lock.json - MANTIDO para builds reproduzíveis
 yarn.lock
 pnpm-lock.yaml
 
