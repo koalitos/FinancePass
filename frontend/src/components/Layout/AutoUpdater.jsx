@@ -60,8 +60,14 @@ const AutoUpdater = () => {
   };
 
   const installUpdate = () => {
+    console.log('🔄 Botão Reiniciar Agora clicado');
     if (window.electron && typeof window.electron.send === 'function') {
+      console.log('📤 Enviando comando install-update para o Electron');
       window.electron.send('install-update');
+      // Feedback visual
+      setShowNotification(false);
+    } else {
+      console.error('❌ window.electron.send não está disponível');
     }
   };
 
