@@ -335,13 +335,18 @@ function startBackend() {
   const nodePath = process.execPath;
   console.log('✅ Usando Node.js do Electron:', nodePath);
 
+  // Obter o caminho de dados do usuário
+  const userDataPath = app.getPath('userData');
+  console.log('📁 User Data Path:', userDataPath);
+
   backendProcess = spawn(nodePath, [backendPath], {
     cwd: backendCwd,
     env: {
       ...process.env,
       PORT: backendPort,
       NODE_ENV: isDev ? 'development' : 'production',
-      ELECTRON_RUN_AS_NODE: '1'
+      ELECTRON_RUN_AS_NODE: '1',
+      ELECTRON_USER_DATA: userDataPath
     }
   });
 

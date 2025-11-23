@@ -1,7 +1,42 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const fs = require('fs');
 
-const dbPath = path.join(__dirname, '../../database.db');
+// Determinar o caminho correto para os dados do usuário
+let userDataPath;
+
+// Se estiver rodando no Electron, usar app.getPath('userData')
+if (process.env.ELECTRON_USER_DATA) {
+  userDataPath = process.env.ELECTRON_USER_DATA;
+} else {
+  // Fallback para desenvolvimento
+  userDataPath = path.join(__dirname, '../..');
+}
+
+// Criar diretório de dados se não existir
+const dataDir = path.join(userDataPath, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+  console.log('📁 Diretório de dados criado:', dataDir);
+}
+
+const dbPath = path.join(dataDir, 'database.db');
+console.log('📊 Banco de dados:', dbPath);
+
+// Migração automática: copiar banco antigo se existir
+const oldDbPath = path.join(__dirname, '../../database.db');
+if (fs.existsSync(oldDbPath) && !fs.existsSync(dbPath)) {
+  console.log('🔄 Migrando banco de dados antigo...');
+  try {
+    fs.copyFileSync(oldDbPath, dbPath);
+    console.log('✅ Banco de dados migrado com sucesso!');
+    console.log('   De:', oldDbPath);
+    console.log('   Para:', dbPath);
+  } catch (err) {
+    console.error('❌ Erro ao migrar banco de dados:', err);
+  }
+}
+
 const db = new sqlite3.Database(dbPath);
 
 function initDatabase() {
