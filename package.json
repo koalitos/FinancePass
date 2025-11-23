@@ -93,8 +93,9 @@
       "createStartMenuShortcut": true,
       "shortcutName": "FinancePass",
       "perMachine": false,
-      "runAfterFinish": true,
-      "deleteAppDataOnUninstall": false
+      "runAfterFinish": false,
+      "deleteAppDataOnUninstall": false,
+      "differentialPackage": true
     },
     "mac": {
       "target": [

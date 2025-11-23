@@ -210,22 +210,18 @@ jobs:
           echo "Files to be uploaded:"
           find release -type f \( -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.yml" \)
 
-      - name: Create or Update Release
-        uses: softprops/action-gh-release@v2
+      - name: Create Release
+        uses: ncipollo/release-action@v1
         with:
           name: "FinancePass ${{ github.ref_name }}"
-          files: |
-            release/win/*.exe
-            release/win/*.yml
-            release/mac/*.dmg
-            release/mac/*.yml
-            release/linux/*.AppImage
-            release/linux/*.deb
-            release/linux/*.yml
+          tag: ${{ github.ref_name }}
+          artifacts: "release/win/*.exe,release/win/*.yml,release/mac/*.dmg,release/mac/*.yml,release/linux/*.AppImage,release/linux/*.deb,release/linux/*.yml"
+          allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          makeLatest: true
+          generateReleaseNotes: true
           draft: false
           prerelease: false
-          fail_on_unmatched_files: false
-          generate_release_notes: true
-          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

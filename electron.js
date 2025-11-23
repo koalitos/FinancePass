@@ -26,6 +26,7 @@ let backendProcess;
 // Configurar auto-updater
 autoUpdater.autoDownload = false; // Controlado manualmente para mostrar progresso
 autoUpdater.autoInstallOnAppQuit = true; // Instala automaticamente ao fechar
+autoUpdater.logger = console; // Log para debug
 
 // Prevenir múltiplas instâncias apenas no app empacotado
 if (app.isPackaged) {
@@ -48,6 +49,8 @@ console.log('='.repeat(50));
 console.log('🚀 FinancePass - Iniciando...');
 console.log('='.repeat(50));
 console.log('📍 Diretório:', __dirname);
+console.log('📁 User Data:', app.getPath('userData'));
+console.log('📁 App Data:', app.getPath('appData'));
 console.log('🔧 process.env.NODE_ENV:', process.env.NODE_ENV);
 console.log('🔧 app.isPackaged:', app.isPackaged);
 console.log('🔧 isDev:', isDev);
@@ -184,6 +187,15 @@ async function createWindow() {
     ? path.join(__dirname, 'assets/icon.icns')
     : path.join(__dirname, 'assets/icon.png');
 
+  // Configurar pasta de dados persistente para o localStorage
+  const userDataPath = app.getPath('userData');
+  const sessionDataPath = path.join(userDataPath, 'SessionData');
+  
+  // Criar diretório se não existir
+  if (!fs.existsSync(sessionDataPath)) {
+    fs.mkdirSync(sessionDataPath, { recursive: true });
+  }
+
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -194,7 +206,8 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      devTools: isDev
+      devTools: isDev,
+      partition: 'persist:financepass'
     },
     icon: iconPath,
     show: false,
