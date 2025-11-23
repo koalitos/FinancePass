@@ -112,6 +112,8 @@ FinancePass-1.0.0.dmg
 ```
 [⬇️ Download para macOS](https://github.com/koalitos/FinancePass/releases)
 
+> ⚠️ **macOS:** Se aparecer "está danificado", veja [instruções de instalação](INSTALACAO-MACOS.md)
+
 ### Linux
 ```
 FinancePass-1.0.0.AppImage
@@ -124,10 +126,25 @@ FinancePass-1.0.0.AppImage
 
 ### Instalação via Executável (Recomendado)
 
-1. Baixe o instalador para seu sistema operacional
+#### Windows
+1. Baixe `FinancePass-Setup-[versão].exe`
 2. Execute o instalador
 3. Siga as instruções na tela
 4. Pronto! O FinancePass está instalado
+
+#### macOS
+1. Baixe `FinancePass-[versão]-[arch].dmg`
+2. Abra o DMG e arraste para Aplicativos
+3. **Importante:** Execute no Terminal: `xattr -cr /Applications/FinancePass.app`
+4. Abra o FinancePass
+
+📖 [Instruções detalhadas para macOS](INSTALACAO-MACOS.md)
+
+#### Linux
+1. Baixe `FinancePass-[versão]-[arch].AppImage`
+2. Dê permissão de execução: `chmod +x FinancePass-*.AppImage`
+3. Execute o arquivo
+4. Pronto!
 
 ### Instalação via Código Fonte
 

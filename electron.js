@@ -187,15 +187,6 @@ async function createWindow() {
     ? path.join(__dirname, 'assets/icon.icns')
     : path.join(__dirname, 'assets/icon.png');
 
-  // Configurar pasta de dados persistente para o localStorage
-  const userDataPath = app.getPath('userData');
-  const sessionDataPath = path.join(userDataPath, 'SessionData');
-  
-  // Criar diretório se não existir
-  if (!fs.existsSync(sessionDataPath)) {
-    fs.mkdirSync(sessionDataPath, { recursive: true });
-  }
-
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -206,8 +197,7 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      devTools: isDev,
-      partition: 'persist:financepass'
+      devTools: isDev
     },
     icon: iconPath,
     show: false,
