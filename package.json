@@ -4,64 +4,156 @@
   "description": "Sistema de Gerenciamento Financeiro e Senhas",
   "main": "electron.js",
   "scripts": {
-    "start": "electron .",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"wait-on http://localhost:3000 && electron .\"",
-    "dev:backend": "cd backend && node server.js",
-    "dev:frontend": "cd frontend && npm start",
-    "dev:simple": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "build": "cd frontend && npm run build",
-    "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
-    "build:linux": "electron-builder --linux",
+    "start": "node_modules\\.bin\\electron .",
+    "start:backend": "cd backend && node server.js",
+    "start:frontend": "cd frontend && npm start",
+    "electron": "node_modules\\.bin\\electron .",
+    "electron-dev": "concurrently \"npm run start:backend\" \"set BROWSER=none && npm run start:frontend\" \"wait-on http://localhost:5173 && node_modules\\.bin\\electron .\"",
+    "dev": "npm run electron-dev",
+    "build": "npm run build --prefix frontend",
+    "build:backend": "npm install --production --prefix backend",
+    "test-prod": "node_modules\\.bin\\electron electron-prod.js",
+    "debug": "set ELECTRON_ENABLE_LOGGING=1 && node_modules\\.bin\\electron electron-prod.js",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:all": "npm run build && electron-builder -mwl",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "postinstall": "electron-builder install-app-deps",
     "setup": "node setup.js",
     "test": "cd backend && node tests/api.test.js",
     "publish": "electron-builder --publish always",
-    "generate-icons": "node scripts/generate-icons.js"
+    "generate-icons": "node scripts/generate-icons.js",
+    "clean": "rimraf dist frontend/build",
+    "lint": "eslint . --ext .js,.jsx",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "release": "node scripts/create-release.js"
   },
   "build": {
-    "appId": "com.financialmanager.app",
-    "productName": "Financial Manager",
+    "appId": "com.koalitos.financepass",
+    "productName": "FinancePass",
+    "copyright": "Copyright © 2025 Koalitos",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "assets"
     },
     "files": [
       "electron.js",
-      "backend/**/*",
-      "frontend/build/**/*",
-      "!backend/node_modules",
-      "!frontend/node_modules"
+      "electron-prod.js",
+      "preload.js",
+      "package.json",
+      "!backend/database.sqlite",
+      "!backend/database.sqlite-*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!node_modules/**/*",
+          "!database.sqlite*"
+        ]
+      },
+      {
+        "from": "frontend/build",
+        "to": "frontend/build",
+        "filter": ["**/*"]
+      }
     ],
     "win": {
-      "target": ["nsis"],
-      "icon": "assets/icon.ico"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FinancePass",
+      "perMachine": false,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false
     },
     "mac": {
-      "target": ["dmg"],
-      "icon": "assets/icon.icns"
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64", "x64"]
+        }
+      ],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.finance",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "title": "FinancePass ${version}"
     },
     "linux": {
-      "target": ["AppImage"],
-      "icon": "assets/icon.png"
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "Office;Finance",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "publish": {
       "provider": "github",
-      "owner": "seu-usuario",
-      "repo": "financial-manager"
+      "owner": "koalitos",
+      "repo": "FinancePass"
     }
   },
   "dependencies": {
-    "electron": "^27.0.0",
+    "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^6.1.4"
   },
   "devDependencies": {
     "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
+    "electron": "^27.0.0",
     "electron-builder": "^24.6.4",
-    "wait-on": "^7.0.1",
+    "png-to-ico": "^2.1.8",
+    "rimraf": "^5.0.5",
     "sharp": "^0.33.0",
-    "png-to-ico": "^2.1.8"
+    "wait-on": "^7.0.1"
   },
-  "keywords": ["finance", "password-manager", "electron", "privacy", "open-source", "offline"],
+  "keywords": [
+    "finance",
+    "password-manager",
+    "electron",
+    "privacy",
+    "open-source",
+    "offline"
+  ],
   "author": "FinancePass Team",
   "license": "CC-BY-NC-4.0"
 }

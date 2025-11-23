@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const os = require('os');
 
 class SyncServer {
-  constructor(port = 3002) {
+  constructor(port = 5175) {
     this.port = port;
     this.wss = null;
     this.token = this.generateToken();

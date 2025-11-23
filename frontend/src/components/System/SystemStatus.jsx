@@ -133,7 +133,7 @@ const SystemStatus = () => {
       icon: Server,
       data: status.backend,
       details: [
-        { label: 'Porta', value: '3001' },
+        { label: 'Porta', value: '5174' },
         { label: 'Tempo de Resposta', value: status.backend.responseTime || 'N/A' },
         { label: 'API', value: 'Express' }
       ]
@@ -143,7 +143,7 @@ const SystemStatus = () => {
       icon: Zap,
       data: status.frontend,
       details: [
-        { label: 'Porta', value: '3000' },
+        { label: 'Porta', value: '5173' },
         { label: 'Versão', value: status.frontend.version },
         { label: 'Framework', value: 'React 19' }
       ]

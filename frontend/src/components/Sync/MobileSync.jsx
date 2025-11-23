@@ -15,7 +15,7 @@ const MobileSync = () => {
   // Função para carregar dispositivos conectados
   const loadConnectedDevices = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/sync/devices');
+      const response = await fetch('http://localhost:5174/api/sync/devices');
       const data = await response.json();
       setConnectedDevices(data.devices || []);
     } catch (error) {
@@ -27,7 +27,7 @@ const MobileSync = () => {
     setLoading(true);
     try {
       // Tentar /info primeiro (nova rota)
-      let response = await fetch('http://localhost:3001/api/sync/info');
+      let response = await fetch('http://localhost:5174/api/sync/info');
       let data;
       
       if (response.ok) {
@@ -35,7 +35,7 @@ const MobileSync = () => {
       } else {
         // Fallback: usar /status e buscar IP manualmente
         console.warn('Rota /info não disponível. Usando /status. Reinicie o backend para usar a nova rota.');
-        response = await fetch('http://localhost:3001/api/sync/status');
+        response = await fetch('http://localhost:5174/api/sync/status');
         const statusData = await response.json();
         
         // Buscar IP local via API auxiliar
@@ -125,7 +125,7 @@ const MobileSync = () => {
 
   const disconnectDevice = async (deviceId) => {
     try {
-      await fetch(`http://localhost:3001/api/sync/disconnect/${deviceId}`, {
+      await fetch(`http://localhost:5174/api/sync/disconnect/${deviceId}`, {
         method: 'POST'
       });
       toast.success('Dispositivo desconectado');

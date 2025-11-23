@@ -72,7 +72,7 @@ const PeopleList = () => {
   const handleGeneratePdf = async (person) => {
     setGeneratingPdf(person.id);
     try {
-      const response = await fetch(`http://localhost:3001/api/pdf/person-report/${person.id}`);
+      const response = await fetch(`http://localhost:5174/api/pdf/person-report/${person.id}`);
 
       if (!response.ok) {
         throw new Error('Erro ao gerar PDF');

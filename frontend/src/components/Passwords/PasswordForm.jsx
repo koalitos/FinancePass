@@ -32,7 +32,7 @@ const PasswordForm = ({ password, onClose, onSave, selectedFolderId }) => {
 
   const loadFolders = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/password-folders');
+      const response = await fetch('http://localhost:5174/api/password-folders');
       const data = await response.json();
       setFolders(data);
     } catch (error) {
