@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, Briefcase, Circle } from 'lucide-react';
+import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, Briefcase, Circle, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useSettings } from '../../contexts/SettingsContext';
 import KofiButton from '../Common/KofiButton';
 
 const Sidebar = ({ isOpen }) => {
   const location = useLocation();
   const { t } = useTranslation();
+  const { settings } = useSettings();
   const [expensesOpen, setExpensesOpen] = useState(false);
   const [billsOpen, setBillsOpen] = useState(false);
   const [incomesOpen, setIncomesOpen] = useState(false);
@@ -32,13 +34,15 @@ const Sidebar = ({ isOpen }) => {
     }
   }, [location.pathname]);
 
-  const menuItems = [
-    { path: '/', icon: LayoutDashboard, label: t('menu.dashboard') },
-    { path: '/passwords', icon: Lock, label: t('menu.passwords') },
+  // Filtrar itens do menu baseado nas configurações
+  const allMenuItems = [
+    { path: '/', icon: LayoutDashboard, label: t('menu.dashboard'), alwaysShow: true },
+    { path: '/passwords', icon: Lock, label: t('menu.passwords'), module: 'passwords' },
     {
       path: '/spending-control',
       icon: Briefcase,
       label: t('menu.wallet'),
+      module: 'finance',
       submenu: [
         { 
           path: '/expenses', 
@@ -66,13 +70,32 @@ const Sidebar = ({ isOpen }) => {
             { path: '/incomes/monthly', label: 'Receitas por Mês' },
           ]
         },
-        { path: '/people', label: t('menu.people') },
-        { path: '/debts', label: t('menu.debts') },
+        { path: '/people', label: t('menu.people'), module: 'people' },
+        { path: '/debts', label: t('menu.debts'), module: 'debts' },
       ]
     },
-    { path: '/backup', icon: Shield, label: 'Backup' },
-    { path: '/sync', icon: Smartphone, label: 'Sincronização' },
+    { path: '/backup', icon: Shield, label: 'Backup', alwaysShow: true },
+    { path: '/sync', icon: Smartphone, label: 'Sincronização', alwaysShow: true },
+    { path: '/settings', icon: Settings, label: 'Configurações', alwaysShow: true },
   ];
+
+  // Filtrar menu baseado nos módulos ativos
+  const menuItems = allMenuItems.filter(item => {
+    if (item.alwaysShow) return true;
+    if (item.module && !settings.modules[item.module]) return false;
+    
+    // Filtrar submenus também
+    if (item.submenu) {
+      item.submenu = item.submenu.filter(subItem => {
+        if (!subItem.module) return true;
+        return settings.modules[subItem.module];
+      });
+      // Se não tiver nenhum submenu ativo, não mostrar o item pai
+      return item.submenu.length > 0;
+    }
+    
+    return true;
+  });
 
   if (!isOpen) return null;
 

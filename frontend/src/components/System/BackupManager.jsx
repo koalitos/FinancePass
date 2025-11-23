@@ -36,7 +36,7 @@ const BackupManager = () => {
       ]);
 
       const backupData = {
-        version: '1.0.0',
+        version: require('../../../package.json').version,
         timestamp: new Date().toISOString(),
         data: {
           expenses: expenses.data,

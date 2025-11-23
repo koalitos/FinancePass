@@ -540,20 +540,10 @@ autoUpdater.on('update-available', (info) => {
   console.log('🎉 Atualização disponível:', info.version);
   sendStatusToWindow('Atualização disponível!');
   
-  dialog.showMessageBox(mainWindow, {
-    type: 'info',
-    title: 'Atualização Disponível',
-    message: `Nova versão ${info.version} disponível!`,
-    detail: 'Deseja baixar e instalar agora?\n\nO app será atualizado ao reiniciar.',
-    buttons: ['Baixar Agora', 'Depois'],
-    defaultId: 0,
-    cancelId: 1
-  }).then(result => {
-    if (result.response === 0) {
-      autoUpdater.downloadUpdate();
-      mainWindow.webContents.send('update-downloading');
-    }
-  });
+  // Enviar para o frontend mostrar notificação no canto
+  if (mainWindow) {
+    mainWindow.webContents.send('update-available', info);
+  }
 });
 
 autoUpdater.on('update-not-available', () => {
@@ -592,21 +582,8 @@ autoUpdater.on('update-downloaded', (info) => {
   
   if (mainWindow) {
     mainWindow.setProgressBar(-1); // Remove barra de progresso
+    mainWindow.webContents.send('update-downloaded', info);
   }
-  
-  dialog.showMessageBox(mainWindow, {
-    type: 'info',
-    title: 'Atualização Pronta',
-    message: `Versão ${info.version} baixada com sucesso!`,
-    detail: 'O app será atualizado ao fechar. Deseja reiniciar agora?',
-    buttons: ['Reiniciar Agora', 'Depois'],
-    defaultId: 0,
-    cancelId: 1
-  }).then(result => {
-    if (result.response === 0) {
-      autoUpdater.quitAndInstall(false, true);
-    }
-  });
 });
 
 // IPC handlers

@@ -1,14 +1,29 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
-  // Auto-updater
-  checkForUpdates: () => ipcRenderer.send('check-for-updates'),
-  downloadUpdate: () => ipcRenderer.send('download-update'),
-  installUpdate: () => ipcRenderer.send('install-update'),
+  // Enviar comandos
+  send: (channel, data) => {
+    const validChannels = ['check-for-updates', 'download-update', 'install-update'];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
   
-  // Listeners
-  onUpdateAvailable: (callback) => ipcRenderer.on('update-available', (event, info) => callback(info)),
-  onUpdateDownloaded: (callback) => ipcRenderer.on('update-downloaded', (event, info) => callback(info)),
-  onDownloadProgress: (callback) => ipcRenderer.on('download-progress', (event, progress) => callback(progress)),
-  onUpdateStatus: (callback) => ipcRenderer.on('update-status', (event, text) => callback(text))
+  // Receber eventos
+  on: (channel, callback) => {
+    const validChannels = ['update-available', 'update-downloaded', 'download-progress', 'update-status', 'update-downloading'];
+    if (validChannels.includes(channel)) {
+      const subscription = (event, ...args) => callback(...args);
+      ipcRenderer.on(channel, subscription);
+      return () => ipcRenderer.removeListener(channel, subscription);
+    }
+  },
+  
+  // Remover todos os listeners
+  removeAllListeners: (channel) => {
+    const validChannels = ['update-available', 'update-downloaded', 'download-progress', 'update-status', 'update-downloading'];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.removeAllListeners(channel);
+    }
+  }
 });

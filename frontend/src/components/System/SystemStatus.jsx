@@ -8,7 +8,7 @@ const SystemStatus = () => {
   const [status, setStatus] = useState({
     backend: { status: 'checking', message: 'Verificando...', responseTime: null },
     database: { status: 'checking', message: 'Verificando...', tables: [] },
-    frontend: { status: 'online', message: 'Online', version: '1.0.0' },
+    frontend: { status: 'online', message: 'Online', version: require('../../../package.json').version },
     electron: { status: 'online', message: 'Online', version: null }
   });
 
@@ -309,7 +309,7 @@ const DataManagement = () => {
       ]);
 
       const backup = {
-        version: '1.0.0',
+        version: require('../../../package.json').version,
         date: new Date().toISOString(),
         encrypted: true,
         data: {
@@ -327,7 +327,7 @@ const DataManagement = () => {
       const encryptedData = await encryptBackup(backupString, backupPassword);
 
       const blob = new Blob([JSON.stringify({
-        version: '1.0.0',
+        version: require('../../../package.json').version,
         encrypted: true,
         date: new Date().toISOString(),
         data: encryptedData

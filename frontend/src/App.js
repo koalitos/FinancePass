@@ -18,10 +18,12 @@ import DebtList from './components/Debts/DebtList';
 import RecurringBills from './components/Bills/RecurringBills';
 import OverdueBills from './components/Bills/OverdueBills';
 import SystemStatus from './components/System/SystemStatus';
+import UpdateNotification from './components/Layout/UpdateNotification';
+import Settings from './components/Settings/Settings';
+import { SettingsProvider } from './contexts/SettingsContext';
 import BackupManager from './components/System/BackupManager';
 import SyncManager from './components/Sync/SyncManager';
 import Login from './components/Auth/Login';
-import UpdateNotification from './components/Layout/UpdateNotification';
 import AutoUpdater from './components/Layout/AutoUpdater';
 
 
@@ -108,8 +110,9 @@ function App() {
   }
 
   return (
-    <ToastProvider>
-      <Router>
+    <SettingsProvider>
+      <ToastProvider>
+        <Router>
         <div className="flex h-screen bg-dark-bg">
         <Sidebar isOpen={sidebarOpen} />
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -137,6 +140,7 @@ function App() {
               <Route path="/backup" element={<BackupManager />} />
               <Route path="/sync" element={<SyncManager />} />
               <Route path="/system" element={<SystemStatus />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>
@@ -144,8 +148,9 @@ function App() {
           <UpdateNotification />
           <AutoUpdater />
         </div>
-      </Router>
-    </ToastProvider>
+        </Router>
+      </ToastProvider>
+    </SettingsProvider>
   );
 }
 
