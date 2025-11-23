@@ -28,6 +28,12 @@ autoUpdater.autoDownload = false; // Controlado manualmente para mostrar progres
 autoUpdater.autoInstallOnAppQuit = true; // Instala automaticamente ao fechar
 autoUpdater.logger = console; // Log para debug
 
+// Configuração específica para macOS
+if (process.platform === 'darwin') {
+  autoUpdater.allowDowngrade = false;
+  autoUpdater.allowPrerelease = false;
+}
+
 // Prevenir múltiplas instâncias apenas no app empacotado
 if (app.isPackaged) {
   const gotTheLock = app.requestSingleInstanceLock();
