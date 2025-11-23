@@ -42,9 +42,7 @@
       "electron.js",
       "electron-prod.js",
       "preload.js",
-      "package.json",
-      "!backend/database.sqlite",
-      "!backend/database.sqlite-*"
+      "package.json"
     ],
     "extraResources": [
       {
@@ -52,8 +50,8 @@
         "to": "backend",
         "filter": [
           "**/*",
-          "!node_modules/**/*",
-          "!database.sqlite*"
+          "!database.sqlite*",
+          "!*.log"
         ]
       },
       {
