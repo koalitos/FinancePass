@@ -130,7 +130,11 @@
       ],
       "icon": "assets/icon.png",
       "category": "Office;Finance",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "maintainer": "Koalitos <lamaral.pro@gmail.com>",
+      "vendor": "Koalitos",
+      "synopsis": "Gerenciador Financeiro e de Senhas",
+      "description": "Sistema completo de gerenciamento financeiro pessoal com gerenciador de senhas integrado. 100% gratuito e open source."
     },
     "publish": {
       "provider": "github",
