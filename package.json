@@ -1,6 +1,6 @@
 {
   "name": "financial-manager",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Sistema de Gerenciamento Financeiro e Senhas",
   "main": "electron.js",
   "publish": {
@@ -33,6 +33,9 @@
     "generate-icons": "node scripts/generate-icons.js",
     "clean": "rimraf dist frontend/build",
     "lint": "eslint . --ext .js,.jsx",
+    "version:patch": "node scripts/bump-version.js patch",
+    "version:minor": "node scripts/bump-version.js minor",
+    "version:major": "node scripts/bump-version.js major",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "release": "node scripts/create-release.js",
     "release-notes": "node scripts/generate-release-notes.js"
@@ -64,14 +67,19 @@
       {
         "from": "frontend/build",
         "to": "frontend/build",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
+    "compression": "normal",
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.ico",
@@ -92,7 +100,10 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["arm64", "x64"]
+          "arch": [
+            "arm64",
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.icns",
@@ -120,11 +131,15 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.png",
