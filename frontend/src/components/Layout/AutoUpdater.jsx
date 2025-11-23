@@ -3,7 +3,6 @@ import { Download, X, RefreshCw } from 'lucide-react';
 
 const AutoUpdater = () => {
   const [updateInfo, setUpdateInfo] = useState(null);
-  const [downloading, setDownloading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [readyToInstall, setReadyToInstall] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
@@ -21,7 +20,6 @@ const AutoUpdater = () => {
     const unsubscribeAvailable = window.electron.on('update-available', (info) => {
       console.log('Atualização disponível:', info);
       setUpdateInfo(info);
-      setDownloading(true);
       setShowNotification(true);
       // Auto-download
       window.electron.send('download-update');
@@ -36,7 +34,6 @@ const AutoUpdater = () => {
     // Listener para download completo
     const unsubscribeDownloaded = window.electron.on('update-downloaded', () => {
       console.log('Atualização baixada e pronta para instalar');
-      setDownloading(false);
       setReadyToInstall(true);
     });
 
