@@ -278,7 +278,8 @@ const SystemStatus = () => {
   );
 };
 
-// Componente de Gerenciamento de Dados
+// Componente de Gerenciamento de Dados - Movido para /backup
+/* eslint-disable no-unused-vars */
 const DataManagement = () => {
   const toast = useToastContext();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);

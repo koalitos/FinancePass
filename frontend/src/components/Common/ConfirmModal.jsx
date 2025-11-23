@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 const ConfirmModal = ({ 
