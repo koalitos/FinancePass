@@ -1,9 +1,6 @@
 name: Build & Release FinancePass
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
 
 permissions:
