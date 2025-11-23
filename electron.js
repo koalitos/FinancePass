@@ -537,28 +537,76 @@ autoUpdater.on('checking-for-update', () => {
 });
 
 autoUpdater.on('update-available', (info) => {
+  console.log('🎉 Atualização disponível:', info.version);
   sendStatusToWindow('Atualização disponível!');
-  mainWindow.webContents.send('update-available', info);
+  
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: 'Atualização Disponível',
+    message: `Nova versão ${info.version} disponível!`,
+    detail: 'Deseja baixar e instalar agora?\n\nO app será atualizado ao reiniciar.',
+    buttons: ['Baixar Agora', 'Depois'],
+    defaultId: 0,
+    cancelId: 1
+  }).then(result => {
+    if (result.response === 0) {
+      autoUpdater.downloadUpdate();
+      mainWindow.webContents.send('update-downloading');
+    }
+  });
 });
 
 autoUpdater.on('update-not-available', () => {
+  console.log('✅ App está atualizado');
   sendStatusToWindow('Aplicação está atualizada.');
 });
 
 autoUpdater.on('error', (err) => {
+  console.error('❌ Erro ao verificar atualizações:', err);
   sendStatusToWindow('Erro ao verificar atualizações: ' + err);
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
-  let message = `Baixando: ${progressObj.percent.toFixed(2)}%`;
-  message += ` (${(progressObj.transferred / 1024 / 1024).toFixed(2)}MB de ${(progressObj.total / 1024 / 1024).toFixed(2)}MB)`;
+  const percent = Math.round(progressObj.percent);
+  const downloaded = (progressObj.transferred / 1024 / 1024).toFixed(1);
+  const total = (progressObj.total / 1024 / 1024).toFixed(1);
+  
+  console.log(`📥 Baixando atualização: ${percent}% (${downloaded}MB / ${total}MB)`);
+  
+  let message = `Baixando: ${percent}% (${downloaded}MB de ${total}MB)`;
   sendStatusToWindow(message);
-  mainWindow.webContents.send('download-progress', progressObj);
+  
+  if (mainWindow) {
+    mainWindow.setProgressBar(progressObj.percent / 100);
+    mainWindow.webContents.send('download-progress', {
+      percent: percent,
+      downloaded: downloaded,
+      total: total
+    });
+  }
 });
 
 autoUpdater.on('update-downloaded', (info) => {
+  console.log('✅ Atualização baixada:', info.version);
   sendStatusToWindow('Atualização baixada. Será instalada ao reiniciar.');
-  mainWindow.webContents.send('update-downloaded', info);
+  
+  if (mainWindow) {
+    mainWindow.setProgressBar(-1); // Remove barra de progresso
+  }
+  
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: 'Atualização Pronta',
+    message: `Versão ${info.version} baixada com sucesso!`,
+    detail: 'O app será atualizado ao fechar. Deseja reiniciar agora?',
+    buttons: ['Reiniciar Agora', 'Depois'],
+    defaultId: 0,
+    cancelId: 1
+  }).then(result => {
+    if (result.response === 0) {
+      autoUpdater.quitAndInstall(false, true);
+    }
+  });
 });
 
 // IPC handlers
