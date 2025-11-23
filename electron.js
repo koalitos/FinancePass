@@ -24,8 +24,8 @@ let loadingWindow;
 let backendProcess;
 
 // Configurar auto-updater
-autoUpdater.autoDownload = false;
-autoUpdater.autoInstallOnAppQuit = true;
+autoUpdater.autoDownload = false; // Controlado manualmente para mostrar progresso
+autoUpdater.autoInstallOnAppQuit = true; // Instala automaticamente ao fechar
 
 // Prevenir múltiplas instâncias apenas no app empacotado
 if (app.isPackaged) {

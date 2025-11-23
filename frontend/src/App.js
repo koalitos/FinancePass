@@ -18,7 +18,6 @@ import DebtList from './components/Debts/DebtList';
 import RecurringBills from './components/Bills/RecurringBills';
 import OverdueBills from './components/Bills/OverdueBills';
 import SystemStatus from './components/System/SystemStatus';
-import UpdateNotification from './components/Layout/UpdateNotification';
 import Settings from './components/Settings/Settings';
 import { SettingsProvider } from './contexts/SettingsContext';
 import BackupManager from './components/System/BackupManager';
@@ -145,7 +144,6 @@ function App() {
             </Routes>
           </main>
         </div>
-          <UpdateNotification />
           <AutoUpdater />
         </div>
         </Router>
