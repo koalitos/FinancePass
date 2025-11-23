@@ -15,7 +15,7 @@ import {
 
 const Settings = () => {
   const { settings, updateModules, resetSettings } = useSettings();
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removido - não utilizado
 
   const modules = [
     {

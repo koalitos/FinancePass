@@ -1,6 +1,6 @@
 {
   "name": "financial-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Sistema de Gerenciamento Financeiro e Senhas",
   "main": "electron.js",
   "publish": {
@@ -27,7 +27,6 @@
     "dist:linux": "npm run build && electron-builder --linux",
     "dist:all": "npm run build && electron-builder -mwl",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
-    "postinstall": "electron-builder install-app-deps",
     "setup": "node setup.js",
     "test": "cd backend && node tests/api.test.js",
     "publish": "electron-builder --publish always",
@@ -163,7 +162,5 @@
     "privacy",
     "open-source",
     "offline"
-  ],
-  "author": "FinancePass Team",
-  "license": "CC-BY-NC-4.0"
+  ]
 }

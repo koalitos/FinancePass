@@ -12,6 +12,7 @@ jobs:
   build-win:
     name: Windows Build
     runs-on: windows-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -20,18 +21,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install root dependencies
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Install frontend dependencies
-        run: npm install --prefix frontend
+        run: npm ci --prefix frontend
+        
+      - name: Install backend dependencies (production)
+        run: npm ci --omit=dev --prefix backend
 
       - name: Build frontend
         run: npm run build
-
-      - name: Install backend dependencies (production)
-        run: npm install --omit=dev --prefix backend
 
       - name: Build Windows Installer
         run: npm run dist:win
@@ -47,6 +49,7 @@ jobs:
   build-mac:
     name: macOS Build
     runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -55,18 +58,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install root dependencies
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Install frontend dependencies
-        run: npm install --prefix frontend
+        run: npm ci --prefix frontend
+        
+      - name: Install backend dependencies (production)
+        run: npm ci --omit=dev --prefix backend
 
       - name: Build frontend
         run: npm run build
-
-      - name: Install backend dependencies (production)
-        run: npm install --omit=dev --prefix backend
 
       - name: Build macOS Installer
         run: npm run dist:mac
@@ -83,6 +87,7 @@ jobs:
   build-linux:
     name: Linux Build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
@@ -91,18 +96,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install root dependencies
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Install frontend dependencies
-        run: npm install --prefix frontend
+        run: npm ci --prefix frontend
+        
+      - name: Install backend dependencies (production)
+        run: npm ci --omit=dev --prefix backend
 
       - name: Build frontend
         run: npm run build
-
-      - name: Install backend dependencies (production)
-        run: npm install --omit=dev --prefix backend
 
       - name: Build Linux Packages
         run: npm run dist:linux
