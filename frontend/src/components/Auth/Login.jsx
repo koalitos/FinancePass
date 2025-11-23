@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, Eye, EyeOff, RefreshCw } from 'lucide-react';
+import { APP_VERSION } from '../../config/version';
 
 const Login = ({ onLogin, isFirstAccess }) => {
   const [password, setPassword] = useState('');
@@ -198,7 +199,7 @@ const Login = ({ onLogin, isFirstAccess }) => {
             <Lock size={16} />
             <p>Seus dados são armazenados localmente</p>
           </div>
-          <p className="text-dark-muted/60 text-xs">Versão 1.0.0</p>
+          <p className="text-dark-muted/60 text-xs">Versão {APP_VERSION}</p>
         </div>
       </div>
     </div>

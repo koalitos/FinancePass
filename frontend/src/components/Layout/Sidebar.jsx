@@ -4,6 +4,7 @@ import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, B
 import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../contexts/SettingsContext';
 import KofiButton from '../Common/KofiButton';
+import { APP_VERSION } from '../../config/version';
 
 const Sidebar = ({ isOpen }) => {
   const location = useLocation();
@@ -249,7 +250,7 @@ const Sidebar = ({ isOpen }) => {
 
       <div className="p-4 border-t border-dark-border space-y-3">
         <KofiButton variant="sidebar" />
-        <p className="text-dark-muted text-xs text-center">v1.0.0</p>
+        <p className="text-dark-muted text-xs text-center">v{APP_VERSION}</p>
       </div>
     </aside>
   );

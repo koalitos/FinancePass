@@ -255,7 +255,7 @@ const SystemStatus = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
             <span className="text-dark-muted">Versão do App:</span>
-            <span className="ml-2 font-semibold">1.0.0</span>
+            <span className="ml-2 font-semibold">{require('../../../package.json').version}</span>
           </div>
           <div>
             <span className="text-dark-muted">Ambiente:</span>
