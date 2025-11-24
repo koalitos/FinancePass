@@ -133,10 +133,18 @@ FinancePass-1.0.0.AppImage
 4. Pronto! O FinancePass está instalado
 
 #### macOS
+
 1. Baixe `FinancePass-[versão]-[arch].dmg`
 2. Abra o DMG e arraste para Aplicativos
-3. **Importante:** Execute no Terminal: `xattr -cr /Applications/FinancePass.app`
-4. Abra o FinancePass
+3. Abra o FinancePass
+4. **Na primeira vez:** O app vai pedir permissão para executar
+   - Clique em **"Permitir"**
+   - Digite sua senha de administrador
+   - Pronto! Não precisará fazer isso novamente
+
+> 💡 **Detecção Automática:** O FinancePass detecta automaticamente quando está bloqueado pelo macOS e pede permissão para corrigir. Você não precisa abrir o Terminal! [Saiba mais](ALTERNATIVAS-CODE-SIGNING.md)
+
+> ⚠️ **Por que isso acontece?** O app não está assinado com certificado Apple Developer (custo de $99/ano para projetos open source). [Entenda melhor](MACOS-GATEKEEPER.md)
 
 📖 [Instruções detalhadas para macOS](INSTALACAO-MACOS.md)
 

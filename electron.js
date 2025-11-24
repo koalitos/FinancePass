@@ -539,6 +539,28 @@ app.whenReady().then(async () => {
 
   // Criar janela principal
   await createWindow();
+  
+  // Verificar e corrigir quarentena no macOS (apenas na primeira execução)
+  if (process.platform === 'darwin' && !isDev && mainWindow) {
+    const { checkAndFixQuarantine } = require('./scripts/fix-quarantine');
+    
+    // Verificar se já foi executado antes
+    const hasRunBefore = app.getPath('userData') + '/.quarantine-fixed';
+    const fs = require('fs');
+    
+    if (!fs.existsSync(hasRunBefore)) {
+      console.log('🍎 Primeira execução no macOS - verificando quarentena...');
+      
+      setTimeout(async () => {
+        const fixed = await checkAndFixQuarantine(mainWindow);
+        
+        if (fixed) {
+          // Marcar como executado
+          fs.writeFileSync(hasRunBefore, new Date().toISOString());
+        }
+      }, 2000); // Aguardar 2 segundos após abrir o app
+    }
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

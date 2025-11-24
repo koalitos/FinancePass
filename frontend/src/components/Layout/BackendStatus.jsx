@@ -69,7 +69,7 @@ const BackendStatus = () => {
   };
 
   // Não mostrar nada se estiver online
-  if (backendStatus === 'online' && !showDetails) {
+  if (backendStatus === 'online') {
     return null;
   }
 

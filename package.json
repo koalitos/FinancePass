@@ -117,10 +117,13 @@
       "icon": "assets/icon.icns",
       "category": "public.app-category.finance",
       "artifactName": "${productName}-${version}-${arch}.${ext}",
-      "hardenedRuntime": false,
+      "hardenedRuntime": true,
       "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
       "identity": null,
-      "type": "distribution"
+      "type": "distribution",
+      "notarize": false
     },
     "dmg": {
       "contents": [
