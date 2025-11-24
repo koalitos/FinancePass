@@ -26,13 +26,15 @@ let updateDownloaded = false; // Flag para rastrear se a atualização foi baixa
 
 // Configurar auto-updater
 autoUpdater.autoDownload = false; // Controlado manualmente para mostrar progresso
-autoUpdater.autoInstallOnAppQuit = true; // Instala automaticamente ao fechar
+autoUpdater.autoInstallOnAppQuit = false; // Desabilitado - vamos controlar manualmente
 autoUpdater.logger = console; // Log para debug
 
 // Configuração específica para macOS
 if (process.platform === 'darwin') {
   autoUpdater.allowDowngrade = false;
   autoUpdater.allowPrerelease = false;
+  // No macOS, forçar instalação manual para garantir que funcione
+  autoUpdater.autoInstallOnAppQuit = false;
   console.log('🍎 Configuração macOS ativada para auto-update');
 }
 
@@ -720,21 +722,35 @@ ipcMain.on('install-update', () => {
         mainWindow.removeAllListeners('close');
       }
       
-      // No macOS com ZIP, precisamos usar setImmediate para garantir que a UI responda
-      setImmediate(() => {
-        console.log('⚡ Executando quitAndInstall...');
+      // No macOS, precisamos garantir que o app feche completamente antes de instalar
+      if (process.platform === 'darwin') {
+        console.log('🍎 macOS detectado - usando instalação específica');
         
-        // Parâmetros para quitAndInstall:
-        // - isSilent: false = mostra diálogos se necessário
-        // - isForceRunAfter: true = força o app a reiniciar após instalação
-        autoUpdater.quitAndInstall(false, true);
+        // Parar o backend antes de atualizar
+        stopBackend();
         
-        // Fallback: se quitAndInstall não funcionar, força o quit
+        // Aguardar um pouco para garantir que tudo foi fechado
         setTimeout(() => {
-          console.log('⚠️  quitAndInstall não fechou o app, forçando quit...');
-          app.quit();
-        }, 1000);
-      });
+          console.log('⚡ Executando quitAndInstall no macOS...');
+          
+          // No macOS com ZIP:
+          // - isSilent: true = não mostra diálogos
+          // - isForceRunAfter: true = força reiniciar após instalação
+          autoUpdater.quitAndInstall(true, true);
+        }, 500);
+      } else {
+        // Windows e Linux
+        setImmediate(() => {
+          console.log('⚡ Executando quitAndInstall...');
+          autoUpdater.quitAndInstall(false, true);
+          
+          // Fallback: se quitAndInstall não funcionar, força o quit
+          setTimeout(() => {
+            console.log('⚠️  quitAndInstall não fechou o app, forçando quit...');
+            app.quit();
+          }, 1000);
+        });
+      }
     } catch (error) {
       console.error('❌ Erro ao instalar atualização:', error);
       if (mainWindow) {
