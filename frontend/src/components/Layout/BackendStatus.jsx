@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Server, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
+import { RefreshCw, AlertCircle } from 'lucide-react';
 import { useToastContext } from '../../contexts/ToastContext';
 
 const BackendStatus = () => {
   const [backendStatus, setBackendStatus] = useState('checking'); // checking, online, offline
   const [isRestarting, setIsRestarting] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
   const toast = useToastContext();
 
   useEffect(() => {
