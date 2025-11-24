@@ -38,6 +38,8 @@ app.use('/api/dashboard', require('./src/routes/dashboardRoutes'));
 app.use('/api/reports', require('./src/routes/reportRoutes'));
 app.use('/api/installments', require('./src/routes/installmentRoutes'));
 app.use('/api/pdf', require('./src/routes/pdfRoutes'));
+app.use('/api/budgets', require('./src/routes/budgetRoutes'));
+app.use('/api/goals', require('./src/routes/goalRoutes'));
 app.use('/api/sync', syncRouter);
 
 // Health check

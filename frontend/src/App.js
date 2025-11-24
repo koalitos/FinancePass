@@ -25,6 +25,9 @@ import SyncManager from './components/Sync/SyncManager';
 import Login from './components/Auth/Login';
 import AutoUpdater from './components/Layout/AutoUpdater';
 import BackendStatus from './components/Layout/BackendStatus';
+import BudgetManager from './components/Budget/BudgetManager';
+import FinancialCharts from './components/Charts/FinancialCharts';
+import GoalManager from './components/Goals/GoalManager';
 
 
 function App() {
@@ -139,6 +142,9 @@ function App() {
               <Route path="/debts" element={<DebtList />} />
               <Route path="/backup" element={<BackupManager />} />
               <Route path="/sync" element={<SyncManager />} />
+              <Route path="/budget" element={<BudgetManager />} />
+              <Route path="/charts" element={<FinancialCharts />} />
+              <Route path="/goals" element={<GoalManager />} />
               <Route path="/system" element={<SystemStatus />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/" />} />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, Briefcase, Circle, Settings } from 'lucide-react';
+import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, Briefcase, Circle, Settings, PieChart, Target, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../contexts/SettingsContext';
 import KofiButton from '../Common/KofiButton';
@@ -75,6 +75,9 @@ const Sidebar = ({ isOpen }) => {
         { path: '/debts', label: t('menu.debts'), module: 'debts' },
       ]
     },
+    { path: '/budget', icon: TrendingUp, label: '💰 Orçamento', module: 'finance' },
+    { path: '/charts', icon: PieChart, label: '📊 Gráficos', module: 'finance' },
+    { path: '/goals', icon: Target, label: '🎯 Metas', module: 'finance' },
     { path: '/backup', icon: Shield, label: 'Backup', alwaysShow: true },
     { path: '/sync', icon: Smartphone, label: 'Sincronização', alwaysShow: true },
     { path: '/settings', icon: Settings, label: 'Configurações', alwaysShow: true },

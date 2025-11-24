@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDashboardSummary } from '../../api/api';
-import { Wallet, TrendingUp, TrendingDown, Lock, Users, Calendar, AlertCircle } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Lock, Users, Calendar, AlertCircle, PieChart, Target } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import api from '../../api/api';
 
 const Dashboard = () => {
@@ -130,6 +131,45 @@ const Dashboard = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Links Rápidos */}
+        <div className="grid-compact grid-cols-1 md:grid-cols-3">
+          <Link to="/budget" className="card-compact hover:bg-dark-border/50 transition cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <TrendingUp className="text-primary" size={20} />
+              </div>
+              <div>
+                <p className="font-semibold">Orçamento</p>
+                <p className="text-xs text-dark-muted">Controle seus gastos</p>
+              </div>
+            </div>
+          </Link>
+
+          <Link to="/charts" className="card-compact hover:bg-dark-border/50 transition cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-success/10">
+                <PieChart className="text-success" size={20} />
+              </div>
+              <div>
+                <p className="font-semibold">Gráficos</p>
+                <p className="text-xs text-dark-muted">Visualize suas finanças</p>
+              </div>
+            </div>
+          </Link>
+
+          <Link to="/goals" className="card-compact hover:bg-dark-border/50 transition cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-warning/10">
+                <Target className="text-warning" size={20} />
+              </div>
+              <div>
+                <p className="font-semibold">Metas</p>
+                <p className="text-xs text-dark-muted">Defina seus objetivos</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         <div className="grid-compact grid-cols-1 lg:grid-cols-2">

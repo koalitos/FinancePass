@@ -717,36 +717,58 @@ ipcMain.on('install-update', () => {
     console.log('🔄 Instalando atualização e reiniciando...');
     
     try {
-      // Fechar a janela principal primeiro
+      // Parar o backend antes de atualizar
+      console.log('⏹️  Parando backend...');
+      stopBackend();
+      
+      // Fechar a janela principal
       if (mainWindow) {
         mainWindow.removeAllListeners('close');
+        mainWindow.close();
       }
       
-      // No macOS, precisamos garantir que o app feche completamente antes de instalar
+      // No macOS, o processo é diferente
       if (process.platform === 'darwin') {
-        console.log('🍎 macOS detectado - usando instalação específica');
+        console.log('🍎 macOS detectado - instalação manual');
         
-        // Parar o backend antes de atualizar
-        stopBackend();
+        // No macOS com ZIP, o electron-updater extrai o novo .app
+        // mas não substitui automaticamente. Precisamos fazer isso manualmente.
         
-        // Aguardar um pouco para garantir que tudo foi fechado
+        const { exec } = require('child_process');
+        const path = require('path');
+        
+        // Caminho do app atual
+        const currentAppPath = app.getAppPath();
+        const appBundle = currentAppPath.split('.app')[0] + '.app';
+        
+        console.log('📁 App atual:', appBundle);
+        
+        // O electron-updater baixa para uma pasta temporária
+        // Vamos usar o quitAndInstall que deve funcionar
         setTimeout(() => {
-          console.log('⚡ Executando quitAndInstall no macOS...');
+          console.log('⚡ Executando quitAndInstall...');
           
-          // No macOS com ZIP:
-          // - isSilent: true = não mostra diálogos
-          // - isForceRunAfter: true = força reiniciar após instalação
-          autoUpdater.quitAndInstall(true, true);
-        }, 500);
+          // Forçar instalação silenciosa e reiniciar
+          autoUpdater.quitAndInstall(false, true);
+          
+          // Fallback: se não funcionar em 2 segundos, força quit
+          setTimeout(() => {
+            console.log('⚠️  Forçando encerramento do app...');
+            app.exit(0);
+          }, 2000);
+        }, 1000);
+        
       } else {
         // Windows e Linux
+        console.log('💻 Windows/Linux - instalação padrão');
+        
         setImmediate(() => {
           console.log('⚡ Executando quitAndInstall...');
           autoUpdater.quitAndInstall(false, true);
           
-          // Fallback: se quitAndInstall não funcionar, força o quit
+          // Fallback
           setTimeout(() => {
-            console.log('⚠️  quitAndInstall não fechou o app, forçando quit...');
+            console.log('⚠️  Forçando quit...');
             app.quit();
           }, 1000);
         });
