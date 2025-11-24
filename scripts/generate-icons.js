@@ -1,99 +1,208 @@
+#!/usr/bin/env node
+/**
+ * Gerador de Ícones para FinancePass
+ * Cria ícones modernos usando Canvas (Node.js)
+ */
+
+const { createCanvas } = require('canvas');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
-console.log('🎨 Gerando ícones para o FinancePass...\n');
+// Cores do gradiente
+const COLOR1 = { r: 59, g: 130, b: 246 };   // #3b82f6 (azul)
+const COLOR2 = { r: 139, g: 92, b: 246 };   // #8b5cf6 (roxo)
 
-// Verificar se o sharp está instalado
-try {
-  require.resolve('sharp');
-} catch (e) {
-  console.log('📦 Instalando dependências necessárias...');
-  execSync('npm install sharp png-to-ico --save-dev', { stdio: 'inherit' });
+/**
+ * Cria gradiente vertical
+ */
+function createGradient(ctx, width, height) {
+  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, `rgb(${COLOR1.r}, ${COLOR1.g}, ${COLOR1.b})`);
+  gradient.addColorStop(1, `rgb(${COLOR2.r}, ${COLOR2.g}, ${COLOR2.b})`);
+  return gradient;
 }
 
-const sharp = require('sharp');
-const pngToIco = require('png-to-ico');
-
-const assetsDir = path.join(__dirname, '..', 'assets');
-const svgPath = path.join(assetsDir, 'icon.svg');
-
-// Criar diretório assets se não existir
-if (!fs.existsSync(assetsDir)) {
-  fs.mkdirSync(assetsDir, { recursive: true });
+/**
+ * Cria ícone com cantos arredondados
+ */
+function createRoundedIcon(size = 512) {
+  const canvas = createCanvas(size, size);
+  const ctx = canvas.getContext('2d');
+  
+  // Fundo transparente
+  ctx.clearRect(0, 0, size, size);
+  
+  // Desenhar retângulo arredondado com gradiente
+  const radius = size / 5;
+  
+  ctx.beginPath();
+  ctx.moveTo(radius, 0);
+  ctx.lineTo(size - radius, 0);
+  ctx.quadraticCurveTo(size, 0, size, radius);
+  ctx.lineTo(size, size - radius);
+  ctx.quadraticCurveTo(size, size, size - radius, size);
+  ctx.lineTo(radius, size);
+  ctx.quadraticCurveTo(0, size, 0, size - radius);
+  ctx.lineTo(0, radius);
+  ctx.quadraticCurveTo(0, 0, radius, 0);
+  ctx.closePath();
+  
+  // Preencher com gradiente
+  ctx.fillStyle = createGradient(ctx, size, size);
+  ctx.fill();
+  
+  // Adicionar sombra interna (efeito de profundidade)
+  ctx.save();
+  ctx.globalCompositeOperation = 'source-atop';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.fillRect(0, 0, size, size / 2);
+  ctx.restore();
+  
+  // Desenhar símbolo $
+  ctx.fillStyle = 'white';
+  ctx.font = `bold ${size / 2}px Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Sombra do texto
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+  ctx.shadowBlur = size / 40;
+  ctx.shadowOffsetX = size / 80;
+  ctx.shadowOffsetY = size / 80;
+  
+  // Desenhar $
+  ctx.fillText('$', size / 2, size / 2);
+  
+  return canvas;
 }
 
-async function generateIcons() {
-  try {
-    // Gerar PNG principal (512x512)
-    console.log('✅ Gerando icon.png (512x512)...');
-    await sharp(svgPath)
-      .resize(512, 512)
-      .png()
-      .toFile(path.join(assetsDir, 'icon.png'));
+/**
+ * Cria ícone circular
+ */
+function createCircularIcon(size = 512) {
+  const canvas = createCanvas(size, size);
+  const ctx = canvas.getContext('2d');
+  
+  // Fundo transparente
+  ctx.clearRect(0, 0, size, size);
+  
+  // Desenhar círculo com gradiente
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = size / 2 - size / 8;
+  
+  // Gradiente radial
+  const gradient = ctx.createRadialGradient(
+    centerX, centerY, 0,
+    centerX, centerY, radius
+  );
+  gradient.addColorStop(0, `rgb(${COLOR1.r}, ${COLOR1.g}, ${COLOR1.b})`);
+  gradient.addColorStop(1, `rgb(${COLOR2.r}, ${COLOR2.g}, ${COLOR2.b})`);
+  
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  
+  // Borda branca semi-transparente
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+  ctx.lineWidth = size / 60;
+  ctx.stroke();
+  
+  // Desenhar símbolo $
+  ctx.fillStyle = 'white';
+  ctx.font = `bold ${size / 2}px Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Sombra do texto
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+  ctx.shadowBlur = size / 40;
+  ctx.shadowOffsetX = size / 80;
+  ctx.shadowOffsetY = size / 80;
+  
+  ctx.fillText('$', centerX, centerY);
+  
+  return canvas;
+}
 
-    // Gerar PNG para ICO (256x256)
-    console.log('✅ Gerando PNG temporário para ICO...');
-    const png256Path = path.join(assetsDir, 'icon-256.png');
-    await sharp(svgPath)
-      .resize(256, 256)
-      .png()
-      .toFile(png256Path);
+/**
+ * Salva canvas como PNG
+ */
+function saveCanvas(canvas, filePath) {
+  const buffer = canvas.toBuffer('image/png');
+  fs.writeFileSync(filePath, buffer);
+  console.log(`✅ Criado: ${filePath}`);
+}
 
-    // Gerar ICO para Windows
-    console.log('✅ Gerando icon.ico para Windows...');
-    const buf = await pngToIco(png256Path);
-    fs.writeFileSync(path.join(assetsDir, 'icon.ico'), buf);
+/**
+ * Redimensiona canvas
+ */
+function resizeCanvas(sourceCanvas, newSize) {
+  const canvas = createCanvas(newSize, newSize);
+  const ctx = canvas.getContext('2d');
+  
+  ctx.drawImage(sourceCanvas, 0, 0, newSize, newSize);
+  
+  return canvas;
+}
 
-    // Limpar arquivo temporário
-    fs.unlinkSync(png256Path);
-
-    // Gerar ICNS para macOS (requer iconutil no macOS)
-    if (process.platform === 'darwin') {
-      console.log('✅ Gerando icon.icns para macOS...');
-      const iconsetDir = path.join(assetsDir, 'icon.iconset');
-      
-      if (!fs.existsSync(iconsetDir)) {
-        fs.mkdirSync(iconsetDir);
-      }
-
-      // Gerar todos os tamanhos necessários para ICNS
-      const sizes = [16, 32, 64, 128, 256, 512];
-      for (const size of sizes) {
-        await sharp(svgPath)
-          .resize(size, size)
-          .png()
-          .toFile(path.join(iconsetDir, `icon_${size}x${size}.png`));
-        
-        // Versão @2x
-        await sharp(svgPath)
-          .resize(size * 2, size * 2)
-          .png()
-          .toFile(path.join(iconsetDir, `icon_${size}x${size}@2x.png`));
-      }
-
-      // Converter para ICNS
-      execSync(`iconutil -c icns "${iconsetDir}" -o "${path.join(assetsDir, 'icon.icns')}"`, { stdio: 'inherit' });
-      
-      // Limpar iconset
-      fs.rmSync(iconsetDir, { recursive: true, force: true });
-    } else {
-      console.log('⚠️  ICNS só pode ser gerado no macOS. Pulando...');
-    }
-
-    console.log('\n✨ Ícones gerados com sucesso!');
-    console.log('📁 Arquivos criados em:', assetsDir);
-    console.log('   - icon.svg (original)');
-    console.log('   - icon.png (512x512)');
-    console.log('   - icon.ico (Windows)');
-    if (process.platform === 'darwin') {
-      console.log('   - icon.icns (macOS)');
-    }
-
-  } catch (error) {
-    console.error('❌ Erro ao gerar ícones:', error);
-    process.exit(1);
+/**
+ * Função principal
+ */
+async function main() {
+  console.log('🎨 Gerando ícones do FinancePass...\n');
+  
+  // Diretórios
+  const projectDir = path.join(__dirname, '..');
+  const assetsDir = path.join(projectDir, 'assets');
+  const publicDir = path.join(projectDir, 'frontend', 'public');
+  
+  // Criar diretórios se não existirem
+  if (!fs.existsSync(assetsDir)) {
+    fs.mkdirSync(assetsDir, { recursive: true });
   }
+  if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+  }
+  
+  // Criar ícones base
+  console.log('📐 Criando ícones base...');
+  const roundedIcon = createRoundedIcon(1024);
+  const circularIcon = createCircularIcon(1024);
+  
+  // Salvar ícones principais
+  console.log('\n💾 Salvando ícones principais...');
+  saveCanvas(roundedIcon, path.join(assetsDir, 'icon.png'));
+  saveCanvas(circularIcon, path.join(assetsDir, 'icon-circular.png'));
+  
+  // Tamanhos para gerar
+  const sizes = [16, 32, 48, 64, 128, 192, 256, 512, 1024];
+  
+  console.log('\n💾 Salvando tamanhos variados...');
+  
+  // Salvar em assets/
+  for (const size of sizes) {
+    const resized = resizeCanvas(roundedIcon, size);
+    saveCanvas(resized, path.join(assetsDir, `icon-${size}.png`));
+  }
+  
+  // Salvar em public/
+  console.log('\n💾 Salvando para frontend...');
+  saveCanvas(resizeCanvas(roundedIcon, 192), path.join(publicDir, 'logo192.png'));
+  saveCanvas(resizeCanvas(roundedIcon, 512), path.join(publicDir, 'logo512.png'));
+  
+  // Favicon (32x32 é o tamanho padrão)
+  saveCanvas(resizeCanvas(roundedIcon, 32), path.join(publicDir, 'favicon.png'));
+  
+  console.log('\n✅ Todos os ícones foram gerados com sucesso!');
+  console.log(`\n📁 Ícones salvos em:`);
+  console.log(`   - ${assetsDir}`);
+  console.log(`   - ${publicDir}`);
+  console.log('\n🎉 Pronto! Agora o FinancePass tem ícones modernos!');
+  console.log('\n💡 Dica: Para criar o .ico, use uma ferramenta online como:');
+  console.log('   https://convertio.co/png-ico/');
 }
 
-generateIcons();
+// Executar
+main().catch(console.error);

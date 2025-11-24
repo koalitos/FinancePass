@@ -14,10 +14,6 @@ const FinancialCharts = () => {
 
   const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
-  useEffect(() => {
-    loadChartData();
-  }, [selectedYear]);
-
   const loadChartData = async () => {
     setLoading(true);
     try {
@@ -81,6 +77,11 @@ const FinancialCharts = () => {
       console.error('Erro ao carregar breakdown por categoria:', error);
     }
   };
+
+  useEffect(() => {
+    loadChartData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedYear]);
 
   const getMonthName = (month) => {
     const names = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 

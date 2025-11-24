@@ -5,7 +5,6 @@ import { useToastContext } from '../../contexts/ToastContext';
 
 const BudgetManager = () => {
   const toast = useToastContext();
-  const [budgets, setBudgets] = useState([]);
   const [analysis, setAnalysis] = useState([]);
   const [categories, setCategories] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -19,12 +18,6 @@ const BudgetManager = () => {
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
 
-  useEffect(() => {
-    loadCategories();
-    loadBudgets();
-    loadAnalysis();
-  }, [selectedYear, selectedMonth]);
-
   const loadCategories = async () => {
     try {
       const response = await api.get('/categories');
@@ -37,7 +30,8 @@ const BudgetManager = () => {
   const loadBudgets = async () => {
     try {
       const response = await api.get(`/budgets/${selectedYear}/${selectedMonth}`);
-      setBudgets(response.data);
+      // setBudgets is not needed as we use analysis data
+      return response.data;
     } catch (error) {
       console.error('Erro ao carregar orçamentos:', error);
     }
@@ -51,6 +45,13 @@ const BudgetManager = () => {
       console.error('Erro ao carregar análise:', error);
     }
   };
+
+  useEffect(() => {
+    loadCategories();
+    loadBudgets();
+    loadAnalysis();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedYear, selectedMonth]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,0 +1,59 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definir gradiente -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Sombra suave -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="3" dy="3" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.4"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Fundo com cantos arredondados -->
+  <rect x="0" y="0" width="512" height="512" rx="100" ry="100" fill="url(#gradient)"/>
+  
+  <!-- Brilho superior -->
+  <rect x="0" y="0" width="512" height="256" rx="100" ry="100" fill="white" opacity="0.1"/>
+  
+  <!-- Cadeado (corpo) -->
+  <rect x="180" y="240" width="152" height="140" rx="20" ry="20" 
+        fill="white" opacity="0.95" filter="url(#shadow)"/>
+  
+  <!-- Cadeado (arco superior) -->
+  <path d="M 210 240 
+           L 210 180 
+           Q 210 140, 256 140
+           Q 302 140, 302 180
+           L 302 240"
+        fill="none" 
+        stroke="white" 
+        stroke-width="30" 
+        stroke-linecap="round"
+        opacity="0.95"
+        filter="url(#shadow)"/>
+  
+  <!-- Buraco da fechadura (formato de $) -->
+  <g transform="translate(256, 310)">
+    <!-- Cifrão estilizado como buraco de fechadura -->
+    <text 
+      x="0" 
+      y="0" 
+      font-family="Arial, sans-serif" 
+      font-size="80" 
+      font-weight="bold" 
+      fill="#3b82f6" 
+      text-anchor="middle"
+      dominant-baseline="middle">$</text>
+  </g>
+</svg>
