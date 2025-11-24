@@ -23,7 +23,7 @@ function createGradient(ctx, width, height) {
 }
 
 /**
- * Cria ícone com cantos arredondados
+ * Cria ícone V2 com cadeado e cifrão
  */
 function createRoundedIcon(size = 512) {
   const canvas = createCanvas(size, size);
@@ -51,27 +51,88 @@ function createRoundedIcon(size = 512) {
   ctx.fillStyle = createGradient(ctx, size, size);
   ctx.fill();
   
-  // Adicionar sombra interna (efeito de profundidade)
+  // Adicionar brilho superior
   ctx.save();
   ctx.globalCompositeOperation = 'source-atop';
   ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
   ctx.fillRect(0, 0, size, size / 2);
   ctx.restore();
   
-  // Desenhar símbolo $
-  ctx.fillStyle = 'white';
-  ctx.font = `bold ${size / 2}px Arial, sans-serif`;
+  // Dimensões do cadeado
+  const lockWidth = size * 0.3;
+  const lockHeight = size * 0.27;
+  const lockX = (size - lockWidth) / 2;
+  const lockY = size * 0.47;
+  const lockRadius = lockWidth / 8;
+  
+  // Corpo do cadeado (retângulo arredondado branco)
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+  ctx.shadowBlur = size / 60;
+  ctx.shadowOffsetX = size / 170;
+  ctx.shadowOffsetY = size / 170;
+  
+  ctx.beginPath();
+  ctx.moveTo(lockX + lockRadius, lockY);
+  ctx.lineTo(lockX + lockWidth - lockRadius, lockY);
+  ctx.quadraticCurveTo(lockX + lockWidth, lockY, lockX + lockWidth, lockY + lockRadius);
+  ctx.lineTo(lockX + lockWidth, lockY + lockHeight - lockRadius);
+  ctx.quadraticCurveTo(lockX + lockWidth, lockY + lockHeight, lockX + lockWidth - lockRadius, lockY + lockHeight);
+  ctx.lineTo(lockX + lockRadius, lockY + lockHeight);
+  ctx.quadraticCurveTo(lockX, lockY + lockHeight, lockX, lockY + lockHeight - lockRadius);
+  ctx.lineTo(lockX, lockY + lockRadius);
+  ctx.quadraticCurveTo(lockX, lockY, lockX + lockRadius, lockY);
+  ctx.closePath();
+  ctx.fill();
+  
+  // Arco superior do cadeado
+  const arcThickness = size * 0.06;
+  const arcTop = size * 0.35;
+  const arcHeight = lockY - arcTop;
+  const arcWidth = lockWidth * 0.7;
+  const arcX = lockX + (lockWidth - arcWidth) / 2;
+  
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+  ctx.lineWidth = arcThickness;
+  ctx.lineCap = 'round';
+  
+  // Desenhar arco
+  ctx.beginPath();
+  ctx.arc(
+    lockX + lockWidth / 2,
+    arcTop + arcHeight,
+    arcWidth / 2,
+    Math.PI,
+    0,
+    false
+  );
+  ctx.stroke();
+  
+  // Linhas verticais do arco
+  ctx.beginPath();
+  ctx.moveTo(arcX + arcThickness / 2, arcTop + arcHeight);
+  ctx.lineTo(arcX + arcThickness / 2, lockY);
+  ctx.stroke();
+  
+  ctx.beginPath();
+  ctx.moveTo(arcX + arcWidth - arcThickness / 2, arcTop + arcHeight);
+  ctx.lineTo(arcX + arcWidth - arcThickness / 2, lockY);
+  ctx.stroke();
+  
+  // Resetar sombra
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  
+  // Cifrão no centro do cadeado
+  ctx.fillStyle = 'rgb(59, 130, 246)'; // Azul do gradiente
+  ctx.font = `bold ${size * 0.16}px Arial, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   
-  // Sombra do texto
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-  ctx.shadowBlur = size / 40;
-  ctx.shadowOffsetX = size / 80;
-  ctx.shadowOffsetY = size / 80;
-  
-  // Desenhar $
-  ctx.fillText('$', size / 2, size / 2);
+  const dollarY = lockY + lockHeight / 2;
+  ctx.fillText('$', size / 2, dollarY);
   
   return canvas;
 }
@@ -151,7 +212,7 @@ function resizeCanvas(sourceCanvas, newSize) {
  * Função principal
  */
 async function main() {
-  console.log('🎨 Gerando ícones do FinancePass...\n');
+  console.log('🎨 Gerando ícones V2 do FinancePass (Cadeado + Cifrão)...\n');
   
   // Diretórios
   const projectDir = path.join(__dirname, '..');
@@ -166,42 +227,42 @@ async function main() {
     fs.mkdirSync(publicDir, { recursive: true });
   }
   
-  // Criar ícones base
-  console.log('📐 Criando ícones base...');
-  const roundedIcon = createRoundedIcon(1024);
-  const circularIcon = createCircularIcon(1024);
+  // Criar ícone V2
+  console.log('📐 Criando ícone V2 (Cadeado + Cifrão)...');
+  const icon = createRoundedIcon(1024);
   
-  // Salvar ícones principais
-  console.log('\n💾 Salvando ícones principais...');
-  saveCanvas(roundedIcon, path.join(assetsDir, 'icon.png'));
-  saveCanvas(circularIcon, path.join(assetsDir, 'icon-circular.png'));
+  // Salvar ícone principal
+  console.log('\n💾 Salvando ícone principal...');
+  saveCanvas(icon, path.join(assetsDir, 'icon.png'));
   
   // Tamanhos para gerar
   const sizes = [16, 32, 48, 64, 128, 192, 256, 512, 1024];
   
-  console.log('\n💾 Salvando tamanhos variados...');
+  console.log('\n💾 Salvando tamanhos variados em assets/...');
   
   // Salvar em assets/
   for (const size of sizes) {
-    const resized = resizeCanvas(roundedIcon, size);
+    const resized = resizeCanvas(icon, size);
     saveCanvas(resized, path.join(assetsDir, `icon-${size}.png`));
   }
   
   // Salvar em public/
-  console.log('\n💾 Salvando para frontend...');
-  saveCanvas(resizeCanvas(roundedIcon, 192), path.join(publicDir, 'logo192.png'));
-  saveCanvas(resizeCanvas(roundedIcon, 512), path.join(publicDir, 'logo512.png'));
+  console.log('\n💾 Salvando para frontend/public/...');
+  saveCanvas(resizeCanvas(icon, 16), path.join(publicDir, 'favicon-16x16.png'));
+  saveCanvas(resizeCanvas(icon, 32), path.join(publicDir, 'favicon-32x32.png'));
+  saveCanvas(resizeCanvas(icon, 192), path.join(publicDir, 'logo192.png'));
+  saveCanvas(resizeCanvas(icon, 512), path.join(publicDir, 'logo512.png'));
   
-  // Favicon (32x32 é o tamanho padrão)
-  saveCanvas(resizeCanvas(roundedIcon, 32), path.join(publicDir, 'favicon.png'));
-  
-  console.log('\n✅ Todos os ícones foram gerados com sucesso!');
+  console.log('\n✅ Todos os ícones V2 foram gerados com sucesso!');
   console.log(`\n📁 Ícones salvos em:`);
-  console.log(`   - ${assetsDir}`);
-  console.log(`   - ${publicDir}`);
-  console.log('\n🎉 Pronto! Agora o FinancePass tem ícones modernos!');
-  console.log('\n💡 Dica: Para criar o .ico, use uma ferramenta online como:');
-  console.log('   https://convertio.co/png-ico/');
+  console.log(`   - ${assetsDir}/icon.png (1024x1024)`);
+  console.log(`   - ${assetsDir}/icon-16.png até icon-1024.png`);
+  console.log(`   - ${publicDir}/logo192.png e logo512.png`);
+  console.log(`   - ${publicDir}/favicon-16x16.png e favicon-32x32.png`);
+  console.log('\n🎉 Pronto! FinancePass agora tem o ícone V2 (Cadeado + Cifrão)!');
+  console.log('\n💡 Próximo passo: Criar o .ico para Windows');
+  console.log('   Use: https://convertio.co/png-ico/');
+  console.log('   Upload: icon-16.png, icon-32.png, icon-48.png, icon-64.png');
 }
 
 // Executar
