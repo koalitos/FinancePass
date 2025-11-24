@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Activity, Database, Server, Zap, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Activity, Database, Server, Zap, CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { useToastContext } from '../../contexts/ToastContext';
 import api from '../../api/api';
 
 const SystemStatus = () => {
-  // const toast = useToastContext(); // Removido - não utilizado
+  const toast = useToastContext();
+  const [isRestartingBackend, setIsRestartingBackend] = useState(false);
   const [status, setStatus] = useState({
     backend: { status: 'checking', message: 'Verificando...', responseTime: null },
     database: { status: 'checking', message: 'Verificando...', tables: [] },
@@ -95,11 +96,45 @@ const SystemStatus = () => {
     }
   }, [checkDatabase]);
 
+  const handleRestartBackend = () => {
+    if (!toast) {
+      console.error('Toast não está disponível');
+      return;
+    }
+    
+    if (!window.electron || typeof window.electron.send !== 'function') {
+      toast.error('Função disponível apenas no app desktop');
+      return;
+    }
+    
+    setIsRestartingBackend(true);
+    toast.info('Reiniciando backend... Aguarde alguns segundos.');
+    window.electron.send('restart-backend');
+  };
+
   useEffect(() => {
     checkSystemStatus();
+    
+    // Listener para quando o backend for reiniciado
+    if (window.electron && typeof window.electron.on === 'function') {
+      const unsubscribe = window.electron.on('backend-restarted', (result) => {
+        setIsRestartingBackend(false);
+        if (result.success) {
+          toast.success('Backend reiniciado com sucesso!');
+          // Verificar status novamente após 1 segundo
+          setTimeout(checkSystemStatus, 1000);
+        } else {
+          toast.error('Erro ao reiniciar backend: ' + result.error);
+        }
+      });
+      
+      return () => {
+        if (typeof unsubscribe === 'function') unsubscribe();
+      };
+    }
     const interval = setInterval(checkSystemStatus, 10000);
     return () => clearInterval(interval);
-  }, [checkSystemStatus]);
+  }, [checkSystemStatus, toast]);
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -187,6 +222,8 @@ const SystemStatus = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {components.map((component, index) => {
           const Icon = component.icon;
+          const isBackend = component.name.includes('Backend');
+          
           return (
             <div 
               key={index} 
@@ -213,6 +250,19 @@ const SystemStatus = () => {
                   </div>
                 ))}
               </div>
+              
+              {isBackend && window.electron && (
+                <div className="mt-4 pt-4 border-t border-dark-border">
+                  <button
+                    onClick={handleRestartBackend}
+                    disabled={isRestartingBackend}
+                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-white py-2 px-4 rounded-lg transition-all disabled:cursor-not-allowed text-sm font-medium"
+                  >
+                    <RefreshCw size={16} className={isRestartingBackend ? 'animate-spin' : ''} />
+                    {isRestartingBackend ? 'Reiniciando...' : 'Reiniciar Backend'}
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}

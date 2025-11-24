@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electron', {
   // Enviar comandos
   send: (channel, data) => {
-    const validChannels = ['check-for-updates', 'download-update', 'install-update'];
+    const validChannels = ['check-for-updates', 'download-update', 'install-update', 'restart-backend'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld('electron', {
   
   // Receber eventos
   on: (channel, callback) => {
-    const validChannels = ['update-available', 'update-downloaded', 'download-progress', 'update-status', 'update-downloading'];
+    const validChannels = ['update-available', 'update-downloaded', 'download-progress', 'update-status', 'update-downloading', 'backend-restarted'];
     if (validChannels.includes(channel)) {
       const subscription = (event, ...args) => callback(...args);
       ipcRenderer.on(channel, subscription);
@@ -21,7 +21,7 @@ contextBridge.exposeInMainWorld('electron', {
   
   // Remover todos os listeners
   removeAllListeners: (channel) => {
-    const validChannels = ['update-available', 'update-downloaded', 'download-progress', 'update-status', 'update-downloading'];
+    const validChannels = ['update-available', 'update-downloaded', 'download-progress', 'update-status', 'update-downloading', 'backend-restarted'];
     if (validChannels.includes(channel)) {
       ipcRenderer.removeAllListeners(channel);
     }

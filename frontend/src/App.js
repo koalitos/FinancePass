@@ -24,6 +24,7 @@ import BackupManager from './components/System/BackupManager';
 import SyncManager from './components/Sync/SyncManager';
 import Login from './components/Auth/Login';
 import AutoUpdater from './components/Layout/AutoUpdater';
+import BackendStatus from './components/Layout/BackendStatus';
 
 
 function App() {
@@ -145,6 +146,7 @@ function App() {
           </main>
         </div>
           <AutoUpdater />
+          <BackendStatus />
         </div>
         </Router>
       </ToastProvider>

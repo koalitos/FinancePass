@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getPasswords, deletePassword, getPassword } from '../../api/api';
-import { Plus, Search, Eye, EyeOff, Copy, Trash2, Edit, Star, Lock } from 'lucide-react';
+import { Plus, Search, Eye, EyeOff, Copy, Trash2, Edit, Star, Lock, Loader2 } from 'lucide-react';
 import { useToastContext } from '../../contexts/ToastContext';
 import { useConfirm } from '../../hooks/useConfirm';
 import ConfirmModal from '../Common/ConfirmModal';
@@ -87,11 +87,14 @@ const PasswordList = () => {
     }
   };
 
-  const togglePasswordVisibility = async (id) => {
-    if (visiblePasswords[id]) {
+  const togglePasswordVisibility = async (id, retryCount = 0) => {
+    if (visiblePasswords[id] && visiblePasswords[id] !== 'loading') {
       // Se já está visível, apenas ocultar
       setVisiblePasswords(prev => ({ ...prev, [id]: false }));
     } else {
+      // Mostrar indicador de carregamento
+      setVisiblePasswords(prev => ({ ...prev, [id]: 'loading' }));
+      
       // Buscar a senha descriptografada do backend
       try {
         const response = await getPassword(id);
@@ -101,7 +104,31 @@ const PasswordList = () => {
         }));
       } catch (error) {
         console.error('Erro ao buscar senha:', error);
-        toast.error('Erro ao visualizar senha');
+        
+        // Retry automático se for erro de rede e ainda não tentou 2 vezes
+        if ((error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) && retryCount < 2) {
+          console.log(`Tentando novamente... (tentativa ${retryCount + 1}/2)`);
+          setTimeout(() => {
+            togglePasswordVisibility(id, retryCount + 1);
+          }, 1000); // Aguarda 1 segundo antes de tentar novamente
+          return;
+        }
+        
+        // Remover o loading
+        setVisiblePasswords(prev => {
+          const newState = { ...prev };
+          delete newState[id];
+          return newState;
+        });
+        
+        // Mensagem de erro mais específica
+        if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
+          toast.error('Backend não está respondendo. Aguarde alguns segundos e tente novamente.');
+        } else if (error.response?.status === 404) {
+          toast.error('Senha não encontrada');
+        } else {
+          toast.error('Erro ao visualizar senha. Verifique se o backend está rodando.');
+        }
       }
     }
   };
@@ -246,18 +273,29 @@ const PasswordList = () => {
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-sm text-dark-muted whitespace-nowrap">🔑 Senha:</span>
                       <span className="font-mono text-sm truncate">
-                        {visiblePasswords[password.id] ? visiblePasswords[password.id] : '••••••••'}
+                        {visiblePasswords[password.id] === 'loading' 
+                          ? 'Carregando...' 
+                          : visiblePasswords[password.id] 
+                            ? visiblePasswords[password.id] 
+                            : '••••••••'}
                       </span>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
                       <button
                         onClick={() => togglePasswordVisibility(password.id)}
-                        className="p-1.5 hover:bg-dark-border rounded transition-colors"
-                        title={visiblePasswords[password.id] ? 'Ocultar senha' : 'Mostrar senha'}
+                        className="p-1.5 hover:bg-dark-border rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={visiblePasswords[password.id] && visiblePasswords[password.id] !== 'loading' ? 'Ocultar senha' : 'Mostrar senha'}
+                        disabled={visiblePasswords[password.id] === 'loading'}
                       >
-                        {visiblePasswords[password.id] ? <EyeOff size={14} /> : <Eye size={14} />}
+                        {visiblePasswords[password.id] === 'loading' ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : visiblePasswords[password.id] ? (
+                          <EyeOff size={14} />
+                        ) : (
+                          <Eye size={14} />
+                        )}
                       </button>
-                      {visiblePasswords[password.id] && (
+                      {visiblePasswords[password.id] && visiblePasswords[password.id] !== 'loading' && (
                         <button
                           onClick={() => copyToClipboard(visiblePasswords[password.id], 'Senha')}
                           className="p-1.5 hover:bg-dark-border rounded transition-colors"
