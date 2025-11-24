@@ -8,7 +8,13 @@ const { spawn } = require('child_process');
 let MacUpdateAssistant;
 let macUpdateAssistant;
 if (process.platform === 'darwin') {
-  MacUpdateAssistant = require('./scripts/mac-update-assistant');
+  try {
+    MacUpdateAssistant = require('./scripts/mac-update-assistant');
+    console.log('✅ Assistente de atualização macOS carregado');
+  } catch (err) {
+    console.log('⚠️ Assistente de atualização macOS não disponível:', err.message);
+    MacUpdateAssistant = null;
+  }
 }
 
 // Desabilitar aceleração de hardware para evitar erros de GPU
@@ -324,8 +330,8 @@ async function createWindow() {
     setTimeout(async () => {
       console.log('🔍 Verificando atualizações agora...');
       
-      // No macOS, usar o assistente customizado
-      if (process.platform === 'darwin') {
+      // No macOS, usar o assistente customizado se disponível
+      if (process.platform === 'darwin' && MacUpdateAssistant) {
         console.log('🍎 Usando assistente de atualização para macOS');
         macUpdateAssistant = new MacUpdateAssistant(mainWindow);
         
