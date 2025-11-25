@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Users, DollarSign, Calendar, CheckCircle, XCircle, TrendingUp, FileText } from 'lucide-react';
+import { Users, DollarSign, Calendar, CheckCircle, XCircle, TrendingUp, FileText, Check, X } from 'lucide-react';
 import { useToastContext } from '../../contexts/ToastContext';
 import api from '../../api/api';
 
@@ -91,6 +91,22 @@ const ExpensesByPerson = () => {
   };
 
   const getAvatarColor = (color) => color || '#3b82f6';
+
+  const togglePaymentStatus = async (expense) => {
+    try {
+      const newStatus = !expense.is_paid_back;
+      await api.put(`/expenses/${expense.id}`, {
+        ...expense,
+        is_paid_back: newStatus
+      });
+      
+      toast.success(newStatus ? 'Marcado como reembolsado!' : 'Marcado como pendente!');
+      loadPeopleWithExpenses();
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+      toast.error('Erro ao atualizar status de pagamento');
+    }
+  };
 
   const handleGeneratePdf = async (person) => {
     try {
@@ -287,6 +303,7 @@ const ExpensesByPerson = () => {
                             <th className="px-4 py-3 text-left text-xs font-semibold text-dark-muted">Categoria</th>
                             <th className="px-4 py-3 text-right text-xs font-semibold text-dark-muted">Valor</th>
                             <th className="px-4 py-3 text-center text-xs font-semibold text-dark-muted">Status</th>
+                            <th className="px-4 py-3 text-center text-xs font-semibold text-dark-muted">Ação</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-dark-border">
@@ -326,6 +343,26 @@ const ExpensesByPerson = () => {
                                     Pendente
                                   </span>
                                 )}
+                              </td>
+                              <td className="px-4 py-3 text-center">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    togglePaymentStatus(expense);
+                                  }}
+                                  className={`p-2 rounded-lg transition-all ${
+                                    expense.is_paid_back
+                                      ? 'bg-warning/20 hover:bg-warning/30 text-warning'
+                                      : 'bg-success/20 hover:bg-success/30 text-success'
+                                  }`}
+                                  title={expense.is_paid_back ? 'Marcar como pendente' : 'Marcar como reembolsado'}
+                                >
+                                  {expense.is_paid_back ? (
+                                    <X size={16} />
+                                  ) : (
+                                    <Check size={16} />
+                                  )}
+                                </button>
                               </td>
                             </tr>
                           ))}

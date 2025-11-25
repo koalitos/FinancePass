@@ -21,7 +21,10 @@ const Sidebar = ({ isOpen }) => {
         location.pathname.startsWith('/bills') || 
         location.pathname.startsWith('/incomes') ||
         location.pathname.startsWith('/people') || 
-        location.pathname.startsWith('/debts')) {
+        location.pathname.startsWith('/debts') ||
+        location.pathname.startsWith('/budget') ||
+        location.pathname.startsWith('/charts') ||
+        location.pathname.startsWith('/goals')) {
       setSpendingControlOpen(true);
     }
     if (location.pathname.startsWith('/expenses')) {
@@ -73,11 +76,11 @@ const Sidebar = ({ isOpen }) => {
         },
         { path: '/people', label: t('menu.people'), module: 'people' },
         { path: '/debts', label: t('menu.debts'), module: 'debts' },
+        { path: '/budget', label: 'Orçamento' },
+        { path: '/charts', label: 'Gráficos' },
+        { path: '/goals', label: 'Metas' },
       ]
     },
-    { path: '/budget', icon: TrendingUp, label: '💰 Orçamento', module: 'finance' },
-    { path: '/charts', icon: PieChart, label: '📊 Gráficos', module: 'finance' },
-    { path: '/goals', icon: Target, label: '🎯 Metas', module: 'finance' },
     { path: '/backup', icon: Shield, label: 'Backup', alwaysShow: true },
     { path: '/sync', icon: Smartphone, label: 'Sincronização', alwaysShow: true },
     { path: '/settings', icon: Settings, label: 'Configurações', alwaysShow: true },
@@ -107,7 +110,6 @@ const Sidebar = ({ isOpen }) => {
     <aside className="w-64 bg-dark-card border-r border-dark-border flex flex-col">
       <div className="p-6 border-b border-dark-border">
         <h1 className="text-2xl font-bold text-primary">💰 {t('app.name')}</h1>
-        <p className="text-dark-muted text-sm mt-1">{t('app.tagline')}</p>
       </div>
       
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -133,7 +135,14 @@ const Sidebar = ({ isOpen }) => {
               : () => {};
             
             const isMenuActive = isSpendingControlMenu 
-              ? (location.pathname.startsWith('/expenses') || location.pathname.startsWith('/bills') || location.pathname.startsWith('/incomes') || location.pathname === '/people' || location.pathname === '/debts')
+              ? (location.pathname.startsWith('/expenses') || 
+                 location.pathname.startsWith('/bills') || 
+                 location.pathname.startsWith('/incomes') || 
+                 location.pathname === '/people' || 
+                 location.pathname === '/debts' ||
+                 location.pathname === '/budget' ||
+                 location.pathname === '/charts' ||
+                 location.pathname === '/goals')
               : location.pathname.startsWith(item.path);
             
             return (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
 import api from '../../api/api';
 import { useToastContext } from '../../contexts/ToastContext';
+import Modal from '../Common/Modal';
 
 const BudgetManager = () => {
   const toast = useToastContext();
@@ -296,14 +297,19 @@ const BudgetManager = () => {
       </div>
 
       {/* Modal de Formulário */}
-      {showForm && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="text-xl font-bold mb-4">
-              {editingBudget ? 'Editar Orçamento' : 'Novo Orçamento'}
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
+      <Modal
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditingBudget(null);
+        }}
+        title={editingBudget ? 'Editar Orçamento' : 'Novo Orçamento'}
+        subtitle="Defina limites de gastos por categoria"
+        icon="💰"
+        gradient="from-primary to-blue-600"
+        maxWidth="max-w-md"
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
               {!editingBudget && (
                 <div>
                   <label className="block text-sm font-medium mb-1">Categoria</label>
@@ -336,25 +342,23 @@ const BudgetManager = () => {
                 />
               </div>
 
-              <div className="flex gap-2 justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setEditingBudget(null);
-                  }}
-                  className="btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-primary">
-                  {editingBudget ? 'Atualizar' : 'Criar'}
-                </button>
-              </div>
-            </form>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setShowForm(false);
+                setEditingBudget(null);
+              }}
+              className="btn-secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary">
+              {editingBudget ? 'Atualizar' : 'Criar'}
+            </button>
           </div>
-        </div>
-      )}
+        </form>
+      </Modal>
     </div>
   );
 };

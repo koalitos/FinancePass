@@ -52,8 +52,7 @@
       "electron.js",
       "electron-prod.js",
       "preload.js",
-      "package.json",
-      "scripts/mac-update-assistant.js"
+      "package.json"
     ],
     "extraResources": [
       {
@@ -84,7 +83,12 @@
         }
       ],
       "icon": "assets/icon.ico",
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "certificateFile": "./cert/certificado-lucas.pfx",
+      "certificatePassword": "${env.WINDOWS_CERT_PASSWORD}",
+      "signingHashAlgorithms": [
+        "sha256"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -122,9 +126,11 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.inherit.plist",
-      "identity": null,
+      "identity": "${env.APPLE_IDENTITY}",
       "type": "distribution",
-      "notarize": false
+      "notarize": {
+        "teamId": "${env.APPLE_TEAM_ID}"
+      }
     },
     "dmg": {
       "contents": [

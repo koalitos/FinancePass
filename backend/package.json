@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "init-user": "node init-user.js"
+    "init-user": "node init-user.js",
+    "migrate:goals": "node migrations/add-goals-columns.js",
+    "recreate:goals": "node migrations/recreate-goals-table.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

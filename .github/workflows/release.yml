@@ -36,6 +36,19 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      - name: Decode certificate
+        run: |
+          $base64Cert = "${{ secrets.WINDOWS_CERT_BASE64 }}"
+          if ($base64Cert) {
+            New-Item -ItemType Directory -Force -Path "$PWD/cert" | Out-Null
+            $bytes = [Convert]::FromBase64String($base64Cert)
+            [IO.File]::WriteAllBytes("$PWD/cert/certificado-lucas.pfx", $bytes)
+            Write-Host "✅ Certificate decoded successfully"
+          } else {
+            Write-Host "⚠️  No certificate found - build will not be signed"
+          }
+        shell: pwsh
+
       - name: Build Windows Installer
         run: |
           echo "========================================="
@@ -58,6 +71,7 @@ jobs:
           dir dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WINDOWS_CERT_PASSWORD: ${{ secrets.WINDOWS_CERT_PASSWORD }}
           DEBUG: electron-builder
         shell: pwsh
 

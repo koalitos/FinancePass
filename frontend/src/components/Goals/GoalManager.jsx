@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Target, TrendingUp, Calendar, CheckCircle } from 'lucide-react';
 import api from '../../api/api';
 import { useToastContext } from '../../contexts/ToastContext';
+import Modal from '../Common/Modal';
 
 const GoalManager = () => {
   const toast = useToastContext();
@@ -20,15 +21,15 @@ const GoalManager = () => {
   });
 
   const categories = [
-    { value: 'savings', label: '💰 Poupança', icon: '💰' },
-    { value: 'emergency', label: '🚨 Emergência', icon: '🚨' },
-    { value: 'travel', label: '✈️ Viagem', icon: '✈️' },
-    { value: 'purchase', label: '🛍️ Compra', icon: '🛍️' },
-    { value: 'investment', label: '📈 Investimento', icon: '📈' },
-    { value: 'education', label: '📚 Educação', icon: '📚' },
-    { value: 'house', label: '🏠 Casa', icon: '🏠' },
-    { value: 'car', label: '🚗 Carro', icon: '🚗' },
-    { value: 'other', label: '🎯 Outro', icon: '🎯' }
+    { value: 'savings', label: 'Poupança', icon: '💰' },
+    { value: 'emergency', label: 'Emergência', icon: '🚨' },
+    { value: 'travel', label: 'Viagem', icon: '✈️' },
+    { value: 'purchase', label: 'Compra', icon: '🛍️' },
+    { value: 'investment', label: 'Investimento', icon: '📈' },
+    { value: 'education', label: 'Educação', icon: '📚' },
+    { value: 'house', label: 'Casa', icon: '🏠' },
+    { value: 'car', label: 'Carro', icon: '🚗' },
+    { value: 'other', label: 'Outro', icon: '🎯' }
   ];
 
   useEffect(() => {
@@ -48,11 +49,18 @@ const GoalManager = () => {
     e.preventDefault();
     
     try {
+      // Preparar dados para envio
+      const dataToSend = {
+        ...formData,
+        deadline: formData.deadline || null,
+        description: formData.description || null
+      };
+
       if (editingGoal) {
-        await api.put(`/goals/${editingGoal.id}`, formData);
+        await api.put(`/goals/${editingGoal.id}`, dataToSend);
         toast.success('Meta atualizada!');
       } else {
-        await api.post('/goals', formData);
+        await api.post('/goals', dataToSend);
         toast.success('Meta criada!');
       }
 
@@ -68,7 +76,8 @@ const GoalManager = () => {
       });
       loadGoals();
     } catch (error) {
-      toast.error('Erro ao salvar meta');
+      console.error('Erro ao salvar meta:', error);
+      toast.error(error.response?.data?.error || 'Erro ao salvar meta');
     }
   };
 
@@ -327,14 +336,19 @@ const GoalManager = () => {
       </div>
 
       {/* Modal de Formulário */}
-      {showForm && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="text-xl font-bold mb-4">
-              {editingGoal ? 'Editar Meta' : 'Nova Meta'}
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
+      <Modal
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditingGoal(null);
+        }}
+        title={editingGoal ? 'Editar Meta' : 'Nova Meta'}
+        subtitle="Defina seus objetivos financeiros"
+        icon="🎯"
+        gradient="from-warning to-orange-600"
+        maxWidth="max-w-md"
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Nome da Meta</label>
                 <input
@@ -424,70 +438,70 @@ const GoalManager = () => {
                 </div>
               )}
 
-              <div className="flex gap-2 justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setEditingGoal(null);
-                  }}
-                  className="btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-primary">
-                  {editingGoal ? 'Atualizar' : 'Criar'}
-                </button>
-              </div>
-            </form>
+          <div className="flex gap-2 justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setShowForm(false);
+                setEditingGoal(null);
+              }}
+              className="btn-secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary">
+              {editingGoal ? 'Atualizar' : 'Criar'}
+            </button>
           </div>
-        </div>
-      )}
+        </form>
+      </Modal>
 
       {/* Modal de Adicionar Progresso */}
-      {showProgressModal && (
-        <div className="modal-overlay">
-          <div className="modal-content max-w-md">
-            <h2 className="text-xl font-bold mb-4">Adicionar Progresso</h2>
-            <p className="text-sm text-dark-muted mb-4">
-              Meta: <span className="font-semibold">{showProgressModal.name}</span>
-            </p>
+      <Modal
+        isOpen={showProgressModal !== null}
+        onClose={() => {
+          setShowProgressModal(null);
+          setProgressAmount('');
+        }}
+        title="Adicionar Progresso"
+        subtitle={showProgressModal ? `Meta: ${showProgressModal.name}` : ''}
+        icon="📈"
+        gradient="from-success to-green-600"
+        maxWidth="max-w-md"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Valor a Adicionar</label>
+            <input
+              type="number"
+              step="0.01"
+              value={progressAmount}
+              onChange={(e) => setProgressAmount(e.target.value)}
+              className="input"
+              placeholder="0.00"
+              autoFocus
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Valor a Adicionar</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={progressAmount}
-                  onChange={(e) => setProgressAmount(e.target.value)}
-                  className="input"
-                  placeholder="0.00"
-                  autoFocus
-                />
-              </div>
-
-              <div className="flex gap-2 justify-end">
-                <button
-                  onClick={() => {
-                    setShowProgressModal(null);
-                    setProgressAmount('');
-                  }}
-                  className="btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={() => handleAddProgress(showProgressModal.id)}
-                  className="btn-primary"
-                >
-                  Adicionar
-                </button>
-              </div>
-            </div>
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => {
+                setShowProgressModal(null);
+                setProgressAmount('');
+              }}
+              className="btn-secondary"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={() => showProgressModal && handleAddProgress(showProgressModal.id)}
+              className="btn-primary"
+            >
+              Adicionar
+            </button>
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };

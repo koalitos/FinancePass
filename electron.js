@@ -4,19 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 
-// Importar assistente de atualização para macOS
-let MacUpdateAssistant;
-let macUpdateAssistant;
-if (process.platform === 'darwin') {
-  try {
-    MacUpdateAssistant = require('./scripts/mac-update-assistant');
-    console.log('✅ Assistente de atualização macOS carregado');
-  } catch (err) {
-    console.log('⚠️ Assistente de atualização macOS não disponível:', err.message);
-    MacUpdateAssistant = null;
-  }
-}
-
 // Desabilitar aceleração de hardware para evitar erros de GPU
 app.disableHardwareAcceleration();
 
@@ -327,36 +314,15 @@ async function createWindow() {
   // Verificar atualizações após 3 segundos
   if (!isDev) {
     console.log('🔍 Agendando verificação de atualizações...');
-    setTimeout(async () => {
+    setTimeout(() => {
       console.log('🔍 Verificando atualizações agora...');
-      
-      // No macOS, usar o assistente customizado se disponível
-      if (process.platform === 'darwin' && MacUpdateAssistant) {
-        console.log('🍎 Usando assistente de atualização para macOS');
-        macUpdateAssistant = new MacUpdateAssistant(mainWindow);
-        
-        try {
-          const updateInfo = await macUpdateAssistant.checkForUpdates();
-          if (updateInfo) {
-            // Enviar notificação para o frontend
-            mainWindow.webContents.send('update-available', {
-              version: updateInfo.tag_name.replace('v', ''),
-              releaseNotes: updateInfo.body
-            });
-          }
-        } catch (err) {
-          console.error('❌ Erro ao verificar atualizações (macOS):', err);
-        }
-      } else {
-        // Windows e Linux: usar electron-updater padrão
-        autoUpdater.checkForUpdates()
-          .then(result => {
-            console.log('✅ Verificação de atualizações concluída:', result);
-          })
-          .catch(err => {
-            console.error('❌ Erro ao verificar atualizações:', err);
-          });
-      }
+      autoUpdater.checkForUpdates()
+        .then(result => {
+          console.log('✅ Verificação de atualizações concluída:', result);
+        })
+        .catch(err => {
+          console.error('❌ Erro ao verificar atualizações:', err);
+        });
     }, 3000);
   } else {
     console.log('⚠️ Modo desenvolvimento - auto-update desabilitado');
@@ -721,39 +687,15 @@ autoUpdater.on('update-downloaded', (info) => {
 });
 
 // IPC handlers
-ipcMain.on('check-for-updates', async () => {
+ipcMain.on('check-for-updates', () => {
   if (!isDev) {
-    if (process.platform === 'darwin' && macUpdateAssistant) {
-      // macOS: usar assistente customizado
-      try {
-        const updateInfo = await macUpdateAssistant.checkForUpdates();
-        if (updateInfo) {
-          mainWindow.webContents.send('update-available', {
-            version: updateInfo.tag_name.replace('v', ''),
-            releaseNotes: updateInfo.body
-          });
-        } else {
-          mainWindow.webContents.send('update-not-available');
-        }
-      } catch (err) {
-        console.error('❌ Erro ao verificar atualizações:', err);
-      }
-    } else {
-      // Windows/Linux: usar electron-updater
-      autoUpdater.checkForUpdates();
-    }
+    autoUpdater.checkForUpdates();
   }
 });
 
-ipcMain.on('download-update', async () => {
+ipcMain.on('download-update', () => {
   if (!isDev) {
-    if (process.platform === 'darwin' && macUpdateAssistant && macUpdateAssistant.latestVersion) {
-      // macOS: usar assistente customizado
-      await macUpdateAssistant.showUpdateDialog(macUpdateAssistant.latestVersion);
-    } else {
-      // Windows/Linux: usar electron-updater
-      autoUpdater.downloadUpdate();
-    }
+    autoUpdater.downloadUpdate();
   }
 });
 

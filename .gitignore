@@ -61,3 +61,12 @@ pnpm-lock.yaml
 
 # Electron builder
 dist_electron/
+
+# Certificados (NUNCA commitar!)
+cert/*.pfx
+cert/*.p12
+cert/*.cer
+cert/*.pem
+cert/*.key
+cert-base64.txt
+!cert/README.md

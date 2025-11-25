@@ -14,6 +14,52 @@ db.run(`CREATE TABLE IF NOT EXISTS financial_goals (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
 
+// Migration: Verificar e adicionar colunas que faltam
+db.all("PRAGMA table_info(financial_goals)", [], (err, columns) => {
+  if (err) {
+    console.error('Erro ao verificar estrutura da tabela financial_goals:', err);
+    return;
+  }
+  
+  const columnNames = columns.map(col => col.name);
+  
+  // Adicionar coluna 'name' se não existir
+  if (!columnNames.includes('name')) {
+    console.log('🔧 Adicionando coluna "name" à tabela financial_goals...');
+    db.run('ALTER TABLE financial_goals ADD COLUMN name TEXT', (err) => {
+      if (err) console.error('Erro ao adicionar coluna name:', err);
+      else console.log('✅ Coluna "name" adicionada');
+    });
+  }
+  
+  // Adicionar coluna 'description' se não existir
+  if (!columnNames.includes('description')) {
+    console.log('🔧 Adicionando coluna "description" à tabela financial_goals...');
+    db.run('ALTER TABLE financial_goals ADD COLUMN description TEXT', (err) => {
+      if (err) console.error('Erro ao adicionar coluna description:', err);
+      else console.log('✅ Coluna "description" adicionada');
+    });
+  }
+  
+  // Adicionar coluna 'category' se não existir
+  if (!columnNames.includes('category')) {
+    console.log('🔧 Adicionando coluna "category" à tabela financial_goals...');
+    db.run('ALTER TABLE financial_goals ADD COLUMN category TEXT DEFAULT "other"', (err) => {
+      if (err) console.error('Erro ao adicionar coluna category:', err);
+      else console.log('✅ Coluna "category" adicionada');
+    });
+  }
+  
+  // Adicionar coluna 'status' se não existir
+  if (!columnNames.includes('status')) {
+    console.log('🔧 Adicionando coluna "status" à tabela financial_goals...');
+    db.run('ALTER TABLE financial_goals ADD COLUMN status TEXT DEFAULT "active"', (err) => {
+      if (err) console.error('Erro ao adicionar coluna status:', err);
+      else console.log('✅ Coluna "status" adicionada');
+    });
+  }
+});
+
 exports.getAll = (req, res) => {
   const sql = `SELECT * FROM financial_goals ORDER BY deadline ASC, created_at DESC`;
   
@@ -52,13 +98,23 @@ exports.getById = (req, res) => {
 exports.create = (req, res) => {
   const { name, description, target_amount, current_amount, deadline, category } = req.body;
   
+  console.log('📝 Criando meta:', { name, description, target_amount, current_amount, deadline, category });
+  
+  if (!name || !target_amount) {
+    return res.status(400).json({ error: 'Nome e valor alvo são obrigatórios' });
+  }
+  
   const sql = `
     INSERT INTO financial_goals (name, description, target_amount, current_amount, deadline, category)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
   
-  db.run(sql, [name, description, target_amount, current_amount || 0, deadline, category || 'other'], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
+  db.run(sql, [name, description || null, target_amount, current_amount || 0, deadline || null, category || 'other'], function(err) {
+    if (err) {
+      console.error('❌ Erro ao criar meta:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    console.log('✅ Meta criada com ID:', this.lastID);
     res.json({ id: this.lastID, name, description, target_amount, current_amount: current_amount || 0, deadline, category });
   });
 };
