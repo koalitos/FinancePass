@@ -14,13 +14,26 @@ function encrypt(text) {
 }
 
 function decrypt(text) {
-  const parts = text.split(':');
-  const iv = Buffer.from(parts.shift(), 'hex');
-  const encryptedText = Buffer.from(parts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv(ALGORITHM, MASTER_KEY, iv);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+  try {
+    if (!text || typeof text !== 'string') {
+      throw new Error('Invalid encrypted text');
+    }
+    
+    const parts = text.split(':');
+    if (parts.length < 2) {
+      throw new Error('Invalid encrypted format');
+    }
+    
+    const iv = Buffer.from(parts.shift(), 'hex');
+    const encryptedText = Buffer.from(parts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv(ALGORITHM, MASTER_KEY, iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+  } catch (error) {
+    console.error('Decryption error:', error.message);
+    throw new Error('Failed to decrypt password: ' + error.message);
+  }
 }
 
 module.exports = { encrypt, decrypt };

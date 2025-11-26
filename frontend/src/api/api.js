@@ -7,7 +7,23 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 segundos de timeout
 });
+
+// Interceptor para tratar erros de forma consistente
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === 'ECONNABORTED') {
+      console.error('Request timeout - backend não respondeu a tempo');
+      error.message = 'O servidor demorou muito para responder. Tente novamente.';
+    } else if (error.code === 'ERR_NETWORK' || !error.response) {
+      console.error('Network error - backend não está acessível');
+      error.message = 'Não foi possível conectar ao servidor. Verifique se o backend está rodando.';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Passwords
 export const getPasswords = () => api.get('/passwords');

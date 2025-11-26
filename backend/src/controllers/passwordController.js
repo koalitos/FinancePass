@@ -8,11 +8,32 @@ exports.getAll = (req, res) => {
 };
 
 exports.getById = (req, res) => {
+  console.log(`[Password] Fetching password ID: ${req.params.id}`);
+  
   PasswordModel.getById(req.params.id, (err, password) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (!password) return res.status(404).json({ error: 'Password not found' });
-    password.password_decrypted = PasswordModel.decryptPassword(password.password_encrypted);
-    res.json(password);
+    if (err) {
+      console.error(`[Password] Database error:`, err);
+      return res.status(500).json({ error: err.message });
+    }
+    
+    if (!password) {
+      console.warn(`[Password] Password not found: ${req.params.id}`);
+      return res.status(404).json({ error: 'Password not found' });
+    }
+    
+    console.log(`[Password] Found password, attempting decryption...`);
+    
+    try {
+      password.password_decrypted = PasswordModel.decryptPassword(password.password_encrypted);
+      console.log(`[Password] Decryption successful`);
+      res.json(password);
+    } catch (decryptError) {
+      console.error('[Password] Decryption error:', decryptError);
+      return res.status(500).json({ 
+        error: 'Failed to decrypt password', 
+        details: decryptError.message 
+      });
+    }
   });
 };
 

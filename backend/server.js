@@ -16,6 +16,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Timeout middleware - previne requisições travadas
+app.use((req, res, next) => {
+  req.setTimeout(15000); // 15 segundos
+  res.setTimeout(15000);
+  next();
+});
+
 // Inicializar banco de dados
 initDatabase();
 
