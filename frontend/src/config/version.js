@@ -1,3 +1,3 @@
 // Versão do aplicativo - sincronizada com package.json
-export const APP_VERSION = '1.0.42';
+export const APP_VERSION = '1.0.43';
 export const APP_NAME = 'FinancePass';
