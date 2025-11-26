@@ -18,21 +18,24 @@ try {
   // Ler o arquivo do certificado
   const certBuffer = fs.readFileSync(certPath);
   
-  // Converter para base64
+  // Converter para base64 (sem quebras de linha)
   const base64Cert = certBuffer.toString('base64');
   
-  // Salvar em arquivo
-  fs.writeFileSync(outputPath, base64Cert);
+  // Salvar em arquivo (uma única linha, sem quebras)
+  fs.writeFileSync(outputPath, base64Cert, { encoding: 'utf8' });
   
   console.log('✅ Certificado codificado com sucesso!\n');
   console.log('📄 Arquivo gerado: cert-base64.txt');
-  console.log(`📊 Tamanho: ${(base64Cert.length / 1024).toFixed(2)} KB\n`);
+  console.log(`📊 Tamanho original: ${(certBuffer.length / 1024).toFixed(2)} KB`);
+  console.log(`📊 Tamanho base64: ${(base64Cert.length / 1024).toFixed(2)} KB`);
+  console.log(`📊 Caracteres: ${base64Cert.length}\n`);
   console.log('📋 Próximos passos:\n');
   console.log('1. Acesse: https://github.com/koalitos/FinancePass/settings/secrets/actions');
   console.log('2. Clique em "New repository secret"');
   console.log('3. Adicione um secret:');
   console.log('   - Nome: WINDOWS_CERT_BASE64');
-  console.log('   - Valor: Cole o conteúdo do arquivo cert-base64.txt');
+  console.log('   - Valor: Cole TODO o conteúdo do arquivo cert-base64.txt');
+  console.log('   ⚠️  IMPORTANTE: Cole tudo em uma única linha, sem quebras!');
   console.log('4. Adicione outro secret:');
   console.log('   - Nome: WINDOWS_CERT_PASSWORD');
   console.log('   - Valor: A senha do seu certificado');

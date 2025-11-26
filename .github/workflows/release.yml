@@ -39,13 +39,20 @@ jobs:
       - name: Decode certificate
         run: |
           $base64Cert = "${{ secrets.WINDOWS_CERT_BASE64 }}"
+          Write-Host "🔍 Checking certificate secret..."
+          Write-Host "   Length: $($base64Cert.Length) characters"
+          
           if ($base64Cert -and $base64Cert.Length -gt 100) {
             try {
+              # Remover espaços e quebras de linha
+              $base64Cert = $base64Cert.Trim() -replace '\s+', ''
+              Write-Host "   Cleaned length: $($base64Cert.Length) characters"
+              
               New-Item -ItemType Directory -Force -Path "$PWD/cert" | Out-Null
               $bytes = [Convert]::FromBase64String($base64Cert)
               [IO.File]::WriteAllBytes("$PWD/cert/certificado-lucas.pfx", $bytes)
               Write-Host "✅ Certificate decoded successfully"
-              Write-Host "   Size: $($bytes.Length) bytes"
+              Write-Host "   File size: $($bytes.Length) bytes"
             } catch {
               Write-Host "⚠️  Failed to decode certificate: $_"
               Write-Host "⚠️  Build will continue without code signing"
