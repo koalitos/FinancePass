@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getDashboardSummary } from '../../api/api';
-import { Wallet, TrendingUp, TrendingDown, Lock, Users, Calendar, AlertCircle, PieChart, Target } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Lock, Users, Calendar, AlertCircle, PieChart, Target, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../api/api';
+import GlassCard from '../Common/GlassCard';
+import GlassButton from '../Common/GlassButton';
 
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);
@@ -54,7 +56,16 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12">Carregando...</div>;
+    return (
+      <div className="flex items-center justify-center h-full">
+        <GlassCard className="text-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500/30 border-t-blue-500"></div>
+            <p className="text-gray-400">Carregando dashboard...</p>
+          </div>
+        </GlassCard>
+      </div>
+    );
   }
 
   const cards = [
@@ -103,142 +114,157 @@ const Dashboard = () => {
   const currentYear = currentDate.getFullYear();
 
   return (
-    <div className="page-container">
+    <div className="page-container relative">
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p className="text-dark-muted text-sm">📅 {currentMonth} {currentYear}</p>
+            <div className="flex items-center gap-2">
+              <Sparkles size={28} className="text-blue-400" />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Dashboard
+              </h1>
+            </div>
+            <p className="text-gray-400 text-sm mt-1">📅 {currentMonth} {currentYear}</p>
           </div>
         </div>
       </div>
       
-      <div className="page-content space-y-4">
-        <div className="grid-compact grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="page-content space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-2">
           {cards.map((card, index) => {
             const Icon = card.icon;
             return (
-              <div key={index} className="card-compact">
+              <GlassCard key={index} gradient={index === 2}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-dark-muted text-xs mb-1">{card.title}</p>
-                    <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
+                    <p className="text-gray-400 text-xs mb-2">{card.title}</p>
+                    <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
                   </div>
-                  <div className={`p-2 rounded-lg ${card.bgColor}`}>
-                    <Icon className={card.color} size={20} />
+                  <div className={`p-3 rounded-xl ${card.bgColor}`} style={{
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }}>
+                    <Icon className={card.color} size={24} />
                   </div>
                 </div>
-              </div>
+              </GlassCard>
             );
           })}
         </div>
 
         {/* Links Rápidos */}
-        <div className="grid-compact grid-cols-1 md:grid-cols-3">
-          <Link to="/budget" className="card-compact hover:bg-dark-border/50 transition cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <TrendingUp className="text-primary" size={20} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link to="/budget">
+            <GlassCard className="group cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-blue-500/20 group-hover:bg-blue-500/30 transition-all">
+                  <TrendingUp className="text-blue-400" size={22} />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Orçamento</p>
+                  <p className="text-xs text-gray-400">Controle seus gastos</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold">Orçamento</p>
-                <p className="text-xs text-dark-muted">Controle seus gastos</p>
-              </div>
-            </div>
+            </GlassCard>
           </Link>
 
-          <Link to="/charts" className="card-compact hover:bg-dark-border/50 transition cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-success/10">
-                <PieChart className="text-success" size={20} />
+          <Link to="/charts">
+            <GlassCard className="group cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-green-500/20 group-hover:bg-green-500/30 transition-all">
+                  <PieChart className="text-green-400" size={22} />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Gráficos</p>
+                  <p className="text-xs text-gray-400">Visualize suas finanças</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold">Gráficos</p>
-                <p className="text-xs text-dark-muted">Visualize suas finanças</p>
-              </div>
-            </div>
+            </GlassCard>
           </Link>
 
-          <Link to="/goals" className="card-compact hover:bg-dark-border/50 transition cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-warning/10">
-                <Target className="text-warning" size={20} />
+          <Link to="/goals">
+            <GlassCard className="group cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-yellow-500/20 group-hover:bg-yellow-500/30 transition-all">
+                  <Target className="text-yellow-400" size={22} />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Metas</p>
+                  <p className="text-xs text-gray-400">Defina seus objetivos</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold">Metas</p>
-                <p className="text-xs text-dark-muted">Defina seus objetivos</p>
-              </div>
-            </div>
+            </GlassCard>
           </Link>
         </div>
 
-        <div className="grid-compact grid-cols-1 lg:grid-cols-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Resumo Mensal */}
-          <div className="card-compact">
-            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <Calendar className="text-primary" size={20} />
+          <GlassCard>
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-white">
+              <Calendar className="text-blue-400" size={22} />
               Resumo Mensal
             </h2>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-dark-muted">Total de Receitas:</span>
-              <span className="font-semibold text-success">
-                R$ {summary?.total_income?.toFixed(2) || '0.00'}
-              </span>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
+                <span className="text-gray-400">Total de Receitas:</span>
+                <span className="font-semibold text-green-400">
+                  R$ {summary?.total_income?.toFixed(2) || '0.00'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
+                <span className="text-gray-400">Total de Despesas:</span>
+                <span className="font-semibold text-red-400">
+                  R$ {summary?.total_expenses?.toFixed(2) || '0.00'}
+                </span>
+              </div>
+              <div className="border-t border-white/10 pt-3 flex justify-between items-center p-3 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+                <span className="font-semibold text-white">Saldo:</span>
+                <span className={`font-bold text-xl ${summary?.balance >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  R$ {summary?.balance?.toFixed(2) || '0.00'}
+                </span>
+              </div>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-dark-muted">Total de Despesas:</span>
-              <span className="font-semibold text-danger">
-                R$ {summary?.total_expenses?.toFixed(2) || '0.00'}
-              </span>
-            </div>
-            <div className="border-t border-dark-border pt-3 flex justify-between items-center">
-              <span className="font-semibold">Saldo:</span>
-              <span className={`font-bold text-xl ${summary?.balance >= 0 ? 'text-success' : 'text-danger'}`}>
-                R$ {summary?.balance?.toFixed(2) || '0.00'}
-              </span>
-            </div>
-          </div>
-        </div>
+          </GlassCard>
 
           {/* Contas Próximas */}
-          <div className="card-compact">
-            <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <AlertCircle className="text-warning" size={20} />
+          <GlassCard>
+            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-white">
+              <AlertCircle className="text-yellow-400" size={22} />
               Contas Próximas (7 dias)
             </h2>
             {upcomingBills.length === 0 ? (
-              <p className="text-dark-muted text-center py-3 text-sm">Nenhuma conta próxima</p>
+              <p className="text-gray-400 text-center py-6 text-sm">Nenhuma conta próxima</p>
             ) : (
-              <div className="space-y-compact">
+              <div className="space-y-3">
                 {upcomingBills.map((bill) => (
                   <div 
                     key={bill.id} 
-                    className={`p-3 rounded-lg border-l-4 ${
+                    className={`p-3 rounded-lg border-l-4 transition-all ${
                       bill.daysUntil === 0 
-                        ? 'bg-red-900/20 border-red-500' 
+                        ? 'bg-red-500/20 border-red-500' 
                         : bill.daysUntil <= 3 
-                        ? 'bg-orange-900/20 border-orange-500' 
-                        : 'bg-yellow-900/20 border-yellow-500'
+                        ? 'bg-orange-500/20 border-orange-500' 
+                        : 'bg-yellow-500/20 border-yellow-500'
                     }`}
+                    style={{ backdropFilter: 'blur(10px)' }}
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <p className="font-semibold">{bill.name}</p>
-                        <p className="text-sm text-dark-muted mt-1">
+                        <p className="font-semibold text-white">{bill.name}</p>
+                        <p className="text-sm text-gray-400 mt-1">
                           Vencimento: Dia {bill.due_day}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-danger">
+                        <p className="font-bold text-red-400">
                           R$ {bill.amount.toFixed(2)}
                         </p>
                         <p className={`text-xs font-semibold mt-1 ${
                           bill.daysUntil === 0 
-                            ? 'text-red-400' 
+                            ? 'text-red-300' 
                             : bill.daysUntil <= 3 
-                            ? 'text-orange-400' 
-                            : 'text-yellow-400'
+                            ? 'text-orange-300' 
+                            : 'text-yellow-300'
                         }`}>
                           {bill.daysUntil === 0 ? 'Hoje!' : `${bill.daysUntil} dias`}
                         </p>
@@ -248,7 +274,7 @@ const Dashboard = () => {
                 ))}
               </div>
             )}
-          </div>
+          </GlassCard>
         </div>
       </div>
     </div>
