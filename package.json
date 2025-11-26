@@ -31,6 +31,7 @@
     "test": "cd backend && node tests/api.test.js",
     "publish": "electron-builder --publish always",
     "generate-icons": "node scripts/generate-icons.js",
+    "encode-cert": "node scripts/encode-certificate.js",
     "clean": "rimraf dist frontend/build",
     "lint": "eslint . --ext .js,.jsx",
     "version:patch": "node scripts/bump-version.js patch",
@@ -84,6 +85,7 @@
       ],
       "icon": "assets/icon.ico",
       "artifactName": "${productName}-Setup-${version}.${ext}",
+      "publisherName": "Koalitos",
       "certificateFile": "./cert/certificado-lucas.pfx",
       "certificatePassword": "${env.WINDOWS_CERT_PASSWORD}",
       "signingHashAlgorithms": [
