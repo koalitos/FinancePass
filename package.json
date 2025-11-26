@@ -85,12 +85,7 @@
       ],
       "icon": "assets/icon.ico",
       "artifactName": "${productName}-Setup-${version}.${ext}",
-      "publisherName": "Koalitos",
-      "certificateFile": "./cert/certificado-lucas.pfx",
-      "certificatePassword": "${env.WINDOWS_CERT_PASSWORD}",
-      "signingHashAlgorithms": [
-        "sha256"
-      ]
+      "publisherName": "Koalitos"
     },
     "nsis": {
       "oneClick": false,

@@ -39,13 +39,23 @@ jobs:
       - name: Decode certificate
         run: |
           $base64Cert = "${{ secrets.WINDOWS_CERT_BASE64 }}"
-          if ($base64Cert) {
-            New-Item -ItemType Directory -Force -Path "$PWD/cert" | Out-Null
-            $bytes = [Convert]::FromBase64String($base64Cert)
-            [IO.File]::WriteAllBytes("$PWD/cert/certificado-lucas.pfx", $bytes)
-            Write-Host "✅ Certificate decoded successfully"
+          if ($base64Cert -and $base64Cert.Length -gt 100) {
+            try {
+              New-Item -ItemType Directory -Force -Path "$PWD/cert" | Out-Null
+              $bytes = [Convert]::FromBase64String($base64Cert)
+              [IO.File]::WriteAllBytes("$PWD/cert/certificado-lucas.pfx", $bytes)
+              Write-Host "✅ Certificate decoded successfully"
+              Write-Host "   Size: $($bytes.Length) bytes"
+            } catch {
+              Write-Host "⚠️  Failed to decode certificate: $_"
+              Write-Host "⚠️  Build will continue without code signing"
+            }
           } else {
-            Write-Host "⚠️  No certificate found - build will not be signed"
+            Write-Host "⚠️  No certificate found in secrets - build will not be signed"
+            Write-Host "💡 To enable code signing:"
+            Write-Host "   1. Run: npm run encode-cert"
+            Write-Host "   2. Add WINDOWS_CERT_BASE64 secret to GitHub"
+            Write-Host "   3. Add WINDOWS_CERT_PASSWORD secret to GitHub"
           }
         shell: pwsh
 
