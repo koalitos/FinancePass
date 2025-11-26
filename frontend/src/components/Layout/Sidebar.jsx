@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, Briefcase, Circle, Settings } from 'lucide-react';
+import { LayoutDashboard, Lock, Smartphone, ChevronDown, ChevronRight, Shield, Briefcase, Circle, Settings, Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../contexts/SettingsContext';
 import KofiButton from '../Common/KofiButton';
@@ -83,6 +83,7 @@ const Sidebar = ({ isOpen }) => {
     },
     { path: '/backup', icon: Shield, label: 'Backup', alwaysShow: true },
     { path: '/sync', icon: Smartphone, label: 'Sincronização', alwaysShow: true },
+    { path: '/updates', icon: Download, label: 'Atualizações', alwaysShow: true },
     { path: '/settings', icon: Settings, label: 'Configurações', alwaysShow: true },
   ];
 
