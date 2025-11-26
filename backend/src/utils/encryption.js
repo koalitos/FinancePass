@@ -2,8 +2,13 @@ const crypto = require('crypto');
 
 const ALGORITHM = 'aes-256-cbc';
 const KEY_STRING = process.env.ENCRYPTION_KEY || process.env.MASTER_KEY || crypto.randomBytes(32).toString('hex');
+
 // Ensure the key is exactly 32 bytes for AES-256
 const MASTER_KEY = crypto.createHash('sha256').update(KEY_STRING).digest();
+
+// Log da chave (apenas primeiros caracteres para debug)
+console.log('[Encryption] Key initialized:', KEY_STRING.substring(0, 10) + '...');
+console.log('[Encryption] Master key length:', MASTER_KEY.length, 'bytes');
 
 function encrypt(text) {
   const iv = crypto.randomBytes(16);

@@ -1,6 +1,6 @@
 {
   "name": "financial-manager",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "description": "Sistema de Gerenciamento Financeiro e Senhas",
   "main": "electron.js",
   "publish": {
@@ -33,6 +33,7 @@
     "generate-icons": "node scripts/generate-icons.js",
     "encode-cert": "powershell -ExecutionPolicy Bypass -File scripts/encode-certificate.ps1",
     "encode-cert:node": "node scripts/encode-certificate.js",
+    "verify-signature": "powershell -ExecutionPolicy Bypass -File scripts/verify-signature.ps1",
     "clean": "rimraf dist frontend/build",
     "lint": "eslint . --ext .js,.jsx",
     "version:patch": "node scripts/bump-version.js patch",

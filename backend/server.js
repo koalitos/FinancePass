@@ -16,10 +16,32 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Request logger
+app.use((req, res, next) => {
+  const start = Date.now();
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+  });
+  
+  next();
+});
+
 // Timeout middleware - previne requisições travadas
 app.use((req, res, next) => {
   req.setTimeout(15000); // 15 segundos
   res.setTimeout(15000);
+  
+  req.on('timeout', () => {
+    console.error(`[Timeout] Request timeout: ${req.method} ${req.path}`);
+  });
+  
+  res.on('timeout', () => {
+    console.error(`[Timeout] Response timeout: ${req.method} ${req.path}`);
+  });
+  
   next();
 });
 
@@ -52,6 +74,28 @@ app.use('/api/sync', syncRouter);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });
+});
+
+// Test encryption endpoint (apenas para debug)
+app.get('/api/test-encryption', (req, res) => {
+  try {
+    const { encrypt, decrypt } = require('./src/utils/encryption');
+    const testText = 'test123';
+    const encrypted = encrypt(testText);
+    const decrypted = decrypt(encrypted);
+    
+    res.json({
+      success: decrypted === testText,
+      original: testText,
+      encrypted: encrypted.substring(0, 20) + '...',
+      decrypted: decrypted
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 // Servir frontend em produção

@@ -95,22 +95,41 @@ const PasswordList = () => {
       // Mostrar indicador de carregamento
       setVisiblePasswords(prev => ({ ...prev, [id]: 'loading' }));
       
+      console.log(`[PasswordList] Buscando senha ID: ${id}`);
+      
       // Buscar a senha descriptografada do backend
       try {
         const response = await getPassword(id);
-        setVisiblePasswords(prev => ({ 
-          ...prev, 
-          [id]: response.data.password_decrypted 
-        }));
-      } catch (error) {
-        console.error('Erro ao buscar senha:', error);
+        console.log(`[PasswordList] Senha recebida com sucesso`);
         
-        // Retry automático se for erro de rede e ainda não tentou 2 vezes
-        if ((error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) && retryCount < 2) {
-          console.log(`Tentando novamente... (tentativa ${retryCount + 1}/2)`);
+        if (response.data && response.data.password_decrypted) {
+          setVisiblePasswords(prev => ({ 
+            ...prev, 
+            [id]: response.data.password_decrypted 
+          }));
+        } else {
+          console.error('[PasswordList] Resposta sem password_decrypted:', response.data);
+          throw new Error('Senha descriptografada não encontrada na resposta');
+        }
+      } catch (error) {
+        console.error('[PasswordList] Erro completo:', {
+          message: error.message,
+          code: error.code,
+          response: error.response?.data,
+          status: error.response?.status
+        });
+        
+        // Retry automático se for timeout ou erro de rede
+        const isNetworkError = error.code === 'ERR_NETWORK' || 
+                              error.code === 'ECONNABORTED' ||
+                              error.message.includes('Network Error') ||
+                              error.message.includes('timeout');
+        
+        if (isNetworkError && retryCount < 2) {
+          console.log(`[PasswordList] Tentando novamente... (${retryCount + 1}/2)`);
           setTimeout(() => {
             togglePasswordVisibility(id, retryCount + 1);
-          }, 1000); // Aguarda 1 segundo antes de tentar novamente
+          }, 1500);
           return;
         }
         
@@ -122,12 +141,17 @@ const PasswordList = () => {
         });
         
         // Mensagem de erro mais específica
-        if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-          toast.error('Backend não está respondendo. Aguarde alguns segundos e tente novamente.');
+        if (error.code === 'ECONNABORTED') {
+          toast.error('Timeout: Backend demorou muito para responder. Tente novamente.');
+        } else if (isNetworkError) {
+          toast.error('Backend não está respondendo. Verifique se está rodando.');
         } else if (error.response?.status === 404) {
-          toast.error('Senha não encontrada');
+          toast.error('Senha não encontrada no banco de dados');
+        } else if (error.response?.status === 500) {
+          const details = error.response?.data?.details || error.response?.data?.error;
+          toast.error(`Erro no servidor: ${details || 'Erro ao descriptografar'}`);
         } else {
-          toast.error('Erro ao visualizar senha. Verifique se o backend está rodando.');
+          toast.error(`Erro: ${error.message}`);
         }
       }
     }
