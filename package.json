@@ -28,6 +28,7 @@
     "dist:all": "npm run build && electron-builder -mwl",
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "setup": "node setup.js",
+    "setup-dev": "node setup-dev.js",
     "test": "cd backend && node tests/api.test.js",
     "publish": "electron-builder --publish always",
     "generate-icons": "node scripts/generate-icons.js",

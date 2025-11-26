@@ -108,15 +108,9 @@ const Sidebar = ({ isOpen }) => {
   if (!isOpen) return null;
 
   return (
-    <aside className="w-64 flex flex-col border-r border-white/10" style={{
-      background: 'rgba(15, 23, 42, 0.7)',
-      backdropFilter: 'blur(20px)',
-      boxShadow: '4px 0 24px 0 rgba(0, 0, 0, 0.2)'
-    }}>
-      <div className="p-6 border-b border-white/10">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          💰 {t('app.name')}
-        </h1>
+    <aside className="w-64 bg-dark-card border-r border-dark-border flex flex-col">
+      <div className="p-6 border-b border-dark-border">
+        <h1 className="text-2xl font-bold text-primary">💰 {t('app.name')}</h1>
       </div>
       
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -156,10 +150,10 @@ const Sidebar = ({ isOpen }) => {
               <div key={item.path}>
                 <button
                   onClick={toggleOpen}
-                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition ${
                     isMenuActive
-                      ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-400 border border-blue-500/30'
-                      : 'text-gray-300 hover:bg-white/5 border border-transparent'
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-dark-text hover:bg-dark-border'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -254,10 +248,10 @@ const Sidebar = ({ isOpen }) => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                 isActive
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg shadow-blue-500/50'
-                  : 'text-gray-300 hover:bg-white/5'
+                  ? 'bg-primary text-white'
+                  : 'text-dark-text hover:bg-dark-border'
               }`}
             >
               <Icon size={20} />
@@ -267,9 +261,9 @@ const Sidebar = ({ isOpen }) => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/10 space-y-3">
+      <div className="p-4 border-t border-dark-border space-y-3">
         <KofiButton variant="sidebar" />
-        <p className="text-gray-400 text-xs text-center">v{APP_VERSION}</p>
+        <p className="text-dark-muted text-xs text-center">v{APP_VERSION}</p>
       </div>
     </aside>
   );

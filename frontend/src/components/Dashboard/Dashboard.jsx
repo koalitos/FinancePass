@@ -117,12 +117,10 @@ const Dashboard = () => {
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
-            <div className="flex items-center gap-2">
-              <Sparkles size={28} className="text-blue-400" />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                Dashboard
-              </h1>
-            </div>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Sparkles size={28} className="text-primary" />
+              Dashboard
+            </h1>
             <p className="text-gray-400 text-sm mt-1">📅 {currentMonth} {currentYear}</p>
           </div>
         </div>

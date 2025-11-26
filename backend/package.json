@@ -8,7 +8,9 @@
     "dev": "node server.js",
     "init-user": "node init-user.js",
     "migrate:goals": "node migrations/add-goals-columns.js",
-    "recreate:goals": "node migrations/recreate-goals-table.js"
+    "recreate:goals": "node migrations/recreate-goals-table.js",
+    "generate-key": "node scripts/generate-encryption-key.js",
+    "fix-encryption": "node scripts/migrate-passwords.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
